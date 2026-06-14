@@ -21,184 +21,179 @@
     --radius-md: 8px;
     --radius-lg: 12px;
     --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --green: #639922; --green-bg: #EAF3DE; --green-text: #3B6D11;
+    --amber: #BA7517; --amber-bg: #FAEEDA; --amber-text: #854F0B;
+    --pink-text: #72243E; --pink-bg: #FBEAF0;
+    --blue-text: #0C447C; --blue-bg: #E6F1FB;
+    --gray-text: #5F5E5A; --gray-bg: #F1EFE8;
   }
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg-primary: #1e1e1c;
-      --bg-secondary: #2a2a27;
-      --bg-tertiary: #111110;
-      --text-primary: #f0efea;
-      --text-secondary: #a8a8a0;
-      --text-tertiary: #6b6b63;
+      --bg-primary: #1e1e1c; --bg-secondary: #2a2a27; --bg-tertiary: #111110;
+      --text-primary: #f0efea; --text-secondary: #a8a8a0; --text-tertiary: #6b6b63;
       --border-tertiary: rgba(255,255,255,0.10);
       --border-secondary: rgba(255,255,255,0.18);
       --border-primary: rgba(255,255,255,0.28);
+      --green-bg:#1c3010; --green-text:#8ecf4a;
+      --amber-bg:#2e1d06; --amber-text:#f5b942;
+      --pink-bg:#2a0f1a; --pink-text:#e888a8;
+      --blue-bg:#051e38; --blue-text:#6eaeed;
+      --gray-bg:#222220; --gray-text:#aaa9a2;
     }
-    .b-green { background: #1c3010 !important; color: #8ecf4a !important; }
-    .b-amber { background: #2e1d06 !important; color: #f5b942 !important; }
-    .b-pink  { background: #2a0f1a !important; color: #e888a8 !important; }
-    .b-blue  { background: #051e38 !important; color: #6eaeed !important; }
-    .b-gray  { background: #222220 !important; color: #aaa9a2 !important; }
     .check-btn.done    { background: #1c3010 !important; border-color: #639922 !important; color: #8ecf4a !important; }
     .check-btn.skipped { background: #2a0808 !important; border-color: #e24b4a !important; color: #f08080 !important; }
     .streak-dot.complete { background: #1c3010 !important; border-color: #639922 !important; color: #8ecf4a !important; }
     .streak-dot.partial  { background: #2e1d06 !important; border-color: #BA7517 !important; color: #f5b942 !important; }
     input, select, textarea { background: #2a2a27 !important; color: #f0efea !important; border-color: rgba(255,255,255,0.18) !important; }
+    .live-current { background: #1c3010 !important; border-color: #639922 !important; }
+    .live-next    { background: #2e1d06 !important; border-color: #BA7517 !important; }
+    .reintr-card  { background: #2a2a27 !important; }
   }
 
-  body {
-    font-family: var(--font-sans);
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-    min-height: 100vh;
-    padding: 0;
-  }
+  body { font-family: var(--font-sans); background: var(--bg-tertiary); color: var(--text-primary); min-height: 100vh; }
 
   header {
-    background: var(--bg-primary);
-    border-bottom: 0.5px solid var(--border-tertiary);
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    background: var(--bg-primary); border-bottom: 0.5px solid var(--border-tertiary);
+    padding: 14px 20px; display: flex; align-items: center; gap: 10px;
+    position: sticky; top: 0; z-index: 10;
   }
-  header .logo { font-size: 20px; color: #639922; }
-  header h1 { font-size: 16px; font-weight: 500; color: var(--text-primary); }
+  header .logo { font-size: 20px; color: var(--green); }
+  header h1 { font-size: 16px; font-weight: 500; }
   header .sub { font-size: 12px; color: var(--text-secondary); margin-left: auto; }
 
-  .container { max-width: 680px; margin: 0 auto; padding: 20px 16px 60px; }
+  /* PREP BANNER */
+  #prep-banner {
+    background: var(--amber-bg); border-bottom: 0.5px solid var(--amber);
+    padding: 10px 20px; font-size: 13px; color: var(--amber-text);
+    display: none; align-items: center; gap: 8px;
+  }
+  #prep-banner i { font-size: 16px; flex-shrink: 0; }
+  #prep-banner .dismiss { margin-left:auto; background:none; border:none; color:var(--amber-text); cursor:pointer; font-size:18px; line-height:1; }
 
-  .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .container { max-width: 680px; margin: 0 auto; padding: 20px 16px 80px; }
+
+  .tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
   .tab {
-    padding: 7px 18px; border-radius: var(--radius-md);
+    padding: 6px 14px; border-radius: var(--radius-md);
     border: 0.5px solid var(--border-secondary);
-    font-size: 14px; cursor: pointer;
+    font-size: 13px; cursor: pointer;
     background: transparent; color: var(--text-secondary);
     transition: all 0.15s; font-family: var(--font-sans);
   }
-  .tab.active {
-    background: var(--bg-secondary); color: var(--text-primary);
-    border-color: var(--border-primary); font-weight: 500;
-  }
-  .tab i { font-size: 15px; vertical-align: -2px; margin-right: 5px; }
+  .tab.active { background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-primary); font-weight: 500; }
+  .tab i { font-size: 14px; vertical-align: -2px; margin-right: 4px; }
 
   .panel { display: none; }
   .panel.active { display: block; }
 
-  .card {
-    background: var(--bg-primary);
-    border: 0.5px solid var(--border-tertiary);
-    border-radius: var(--radius-lg);
-    padding: 1rem 1.25rem;
-    margin-bottom: 12px;
-  }
+  .card { background: var(--bg-primary); border: 0.5px solid var(--border-tertiary); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 12px; }
 
-  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 16px; }
-  .metric { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 12px 14px; }
-  .metric-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
-  .metric-val { font-size: 22px; font-weight: 500; color: var(--text-primary); }
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 14px; }
+  .metric { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 10px 12px; }
+  .metric-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 3px; }
+  .metric-val { font-size: 20px; font-weight: 500; }
 
-  .progress-bar-track { height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; margin: 8px 0; }
-  .progress-bar-fill { height: 8px; border-radius: 4px; transition: width 0.4s; }
+  .progress-bar-track { height: 7px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; margin: 7px 0; }
+  .progress-bar-fill  { height: 7px; border-radius: 4px; transition: width 0.4s; }
 
-  .juice-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid var(--border-tertiary); }
+  /* TRACKER */
+  .juice-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 0.5px solid var(--border-tertiary); }
   .juice-row:last-child { border-bottom: none; }
-
-  .check-btn {
-    width: 28px; height: 28px; border-radius: 50%;
-    border: 0.5px solid var(--border-secondary);
-    background: transparent; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; transition: all 0.15s;
-    color: var(--text-tertiary); font-size: 15px;
-  }
-  .check-btn.done    { background: #EAF3DE; border-color: #639922; color: #3B6D11; }
+  .check-btn { width: 26px; height: 26px; border-radius: 50%; border: 0.5px solid var(--border-secondary); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; color: var(--text-tertiary); font-size: 14px; }
+  .check-btn.done    { background: var(--green-bg); border-color: var(--green); color: var(--green-text); }
   .check-btn.skipped { background: #FCEBEB; border-color: #E24B4A; color: #A32D2D; }
-
   .juice-info { flex: 1; min-width: 0; }
-  .juice-name { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .juice-name { font-size: 14px; font-weight: 500; }
   .juice-name.done { text-decoration: line-through; color: var(--text-tertiary); }
-  .juice-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .juice-meta { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .oz-badge { font-size: 11px; color: var(--text-secondary); background: var(--bg-secondary); border-radius: 99px; padding: 2px 7px; white-space: nowrap; flex-shrink: 0; }
+  .skip-btn { font-size: 11px; color: var(--text-tertiary); background: transparent; border: none; cursor: pointer; padding: 2px 5px; border-radius: 4px; }
 
   .badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 99px; margin-right: 4px; white-space: nowrap; }
-  .b-green { background: #EAF3DE; color: #3B6D11; }
-  .b-amber { background: #FAEEDA; color: #854F0B; }
-  .b-pink  { background: #FBEAF0; color: #72243E; }
-  .b-blue  { background: #E6F1FB; color: #0C447C; }
-  .b-gray  { background: #F1EFE8; color: #5F5E5A; }
-
-  .oz-badge { font-size: 11px; color: var(--text-secondary); background: var(--bg-secondary); border-radius: 99px; padding: 2px 7px; white-space: nowrap; flex-shrink: 0; }
-  .skip-btn { font-size: 11px; color: var(--text-tertiary); background: transparent; border: none; cursor: pointer; padding: 2px 6px; border-radius: 4px; }
-  .skip-btn:hover { color: var(--text-secondary); }
+  .b-green { background: var(--green-bg); color: var(--green-text); }
+  .b-amber { background: var(--amber-bg); color: var(--amber-text); }
+  .b-pink  { background: var(--pink-bg);  color: var(--pink-text); }
+  .b-blue  { background: var(--blue-bg);  color: var(--blue-text); }
+  .b-gray  { background: var(--gray-bg);  color: var(--gray-text); }
 
   .section-title { font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 10px; }
-
-  .day-selector { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-  .day-btn { padding: 5px 14px; border-radius: var(--radius-md); border: 0.5px solid var(--border-secondary); font-size: 13px; cursor: pointer; background: transparent; color: var(--text-secondary); font-family: var(--font-sans); }
+  .day-selector { display: flex; gap: 7px; margin-bottom: 14px; flex-wrap: wrap; }
+  .day-btn { padding: 5px 13px; border-radius: var(--radius-md); border: 0.5px solid var(--border-secondary); font-size: 13px; cursor: pointer; background: transparent; color: var(--text-secondary); font-family: var(--font-sans); }
   .day-btn.active { background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-primary); font-weight: 500; }
 
+  /* LIVE SCHEDULE */
+  .live-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 12px; border-radius: var(--radius-md); margin-bottom: 6px; border: 0.5px solid var(--border-tertiary); transition: all 0.3s; }
+  .live-current { background: var(--green-bg); border-color: var(--green) !important; }
+  .live-next    { background: var(--amber-bg); border-color: var(--amber) !important; }
+  .live-past    { opacity: 0.45; }
+  .live-time    { font-size: 12px; color: var(--text-tertiary); min-width: 58px; padding-top: 2px; }
+  .live-name    { font-size: 14px; font-weight: 500; }
+  .live-oz      { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .live-pill    { font-size: 10px; padding: 2px 8px; border-radius: 99px; margin-left: auto; flex-shrink: 0; white-space: nowrap; }
+  .pill-now     { background: var(--green); color: #fff; }
+  .pill-next    { background: var(--amber); color: #fff; }
+
+  /* TIMER */
   .timer-box { text-align: center; padding: 2rem 1rem; }
-  .timer-big { font-size: 52px; font-weight: 500; color: var(--text-primary); font-variant-numeric: tabular-nums; letter-spacing: 2px; }
+  .timer-big { font-size: 50px; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: 2px; }
   .timer-label { font-size: 13px; color: var(--text-secondary); margin-top: 6px; }
-  .timer-next { font-size: 15px; font-weight: 500; color: var(--text-primary); margin-top: 14px; }
-  .timer-ingr { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+  .timer-next  { font-size: 15px; font-weight: 500; margin-top: 14px; }
+  .timer-ingr  { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
 
-  .motivation-input {
-    width: 100%; border: 0.5px solid var(--border-secondary);
-    border-radius: var(--radius-md); padding: 8px 10px;
-    font-size: 13px; background: transparent; color: var(--text-primary);
-    resize: none; min-height: 60px; font-family: var(--font-sans);
-  }
-  .motivation-q { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
-
-  .action-btn {
-    margin-top: 8px; padding: 7px 16px;
-    border-radius: var(--radius-md); border: 0.5px solid var(--border-secondary);
-    background: transparent; color: var(--text-primary);
-    font-size: 13px; cursor: pointer; font-family: var(--font-sans);
-  }
+  /* INPUTS */
+  .motivation-input { width: 100%; border: 0.5px solid var(--border-secondary); border-radius: var(--radius-md); padding: 8px 10px; font-size: 13px; background: transparent; color: var(--text-primary); resize: none; min-height: 58px; font-family: var(--font-sans); }
+  .motivation-q { font-size: 13px; color: var(--text-secondary); margin-bottom: 7px; }
+  .action-btn { margin-top: 8px; padding: 7px 15px; border-radius: var(--radius-md); border: 0.5px solid var(--border-secondary); background: transparent; color: var(--text-primary); font-size: 13px; cursor: pointer; font-family: var(--font-sans); }
   .action-btn:hover { background: var(--bg-secondary); }
+  .action-btn.primary { background: var(--green); color: #fff; border-color: var(--green); }
+  .action-btn.primary:hover { opacity: 0.88; }
+  .why-display { font-size: 14px; padding: 10px; background: var(--bg-secondary); border-radius: var(--radius-md); margin-bottom: 12px; min-height: 42px; font-style: italic; }
 
-  .why-display {
-    font-size: 14px; color: var(--text-primary);
-    padding: 10px; background: var(--bg-secondary);
-    border-radius: var(--radius-md); margin-bottom: 12px;
-    min-height: 44px; font-style: italic;
-  }
-
+  /* STREAK */
   .streak-row { display: flex; gap: 6px; margin: 8px 0; }
-  .streak-dot {
-    width: 32px; height: 32px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 500;
-    border: 0.5px solid var(--border-tertiary);
-    color: var(--text-secondary);
-  }
-  .streak-dot.complete { background: #EAF3DE; border-color: #639922; color: #3B6D11; }
-  .streak-dot.partial  { background: #FAEEDA; border-color: #BA7517; color: #854F0B; }
-  .streak-dot.today    { background: var(--bg-secondary); border-color: var(--border-primary); color: var(--text-primary); font-weight: 500; }
+  .streak-dot { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; border: 0.5px solid var(--border-tertiary); color: var(--text-secondary); }
+  .streak-dot.complete { background: var(--green-bg); border-color: var(--green); color: var(--green-text); }
+  .streak-dot.partial  { background: var(--amber-bg); border-color: var(--amber); color: var(--amber-text); }
+  .streak-dot.today    { background: var(--bg-secondary); border-color: var(--border-primary); color: var(--text-primary); font-weight: 600; }
 
   .tip-box { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 10px 14px; font-size: 13px; color: var(--text-secondary); margin-top: 12px; }
-  .tip-box i { font-size: 15px; vertical-align: -2px; margin-right: 6px; }
 
-  input[type="time"], select {
-    padding: 7px 10px; border-radius: var(--radius-md);
-    border: 0.5px solid var(--border-secondary);
-    background: var(--bg-primary); color: var(--text-primary);
-    font-size: 13px; font-family: var(--font-sans);
-  }
+  input[type="time"], select { padding: 7px 10px; border-radius: var(--radius-md); border: 0.5px solid var(--border-secondary); background: var(--bg-primary); color: var(--text-primary); font-size: 13px; font-family: var(--font-sans); }
 
-  .legend { display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
+  .legend { display: flex; gap: 14px; margin-top: 8px; flex-wrap: wrap; }
   .legend-item { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; }
-  .legend-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .legend-dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .reset-link { font-size: 12px; color: var(--text-tertiary); text-decoration: underline; cursor: pointer; background: none; border: none; font-family: var(--font-sans); }
 
-  .reset-link { font-size: 12px; color: var(--text-tertiary); text-decoration: underline; cursor: pointer; background: none; border: none; font-family: var(--font-sans); margin-top: 8px; display: inline-block; }
+  /* REINTRODUCTION */
+  .reintr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  .reintr-card { background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 14px 16px; border: 0.5px solid var(--border-tertiary); }
+  .reintr-day  { font-size: 11px; font-weight: 500; color: var(--text-tertiary); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .reintr-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+  .reintr-foods { font-size: 12px; color: var(--text-secondary); line-height: 1.7; }
+  .reintr-warn  { font-size: 11px; margin-top: 8px; padding: 6px 10px; border-radius: var(--radius-md); background: var(--amber-bg); color: var(--amber-text); }
 
-  footer { text-align: center; font-size: 12px; color: var(--text-tertiary); padding: 24px 0 8px; }
+  /* HISTORY */
+  .history-entry { border: 0.5px solid var(--border-tertiary); border-radius: var(--radius-lg); padding: 12px 14px; margin-bottom: 10px; }
+  .history-date  { font-size: 12px; color: var(--text-tertiary); margin-bottom: 6px; }
+  .history-title { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+  .history-bars  { display: flex; flex-direction: column; gap: 5px; }
+  .history-bar-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-secondary); }
+  .history-bar-track { flex: 1; height: 5px; background: var(--bg-secondary); border-radius: 3px; overflow: hidden; }
+  .history-bar-fill  { height: 5px; border-radius: 3px; }
+  .history-note  { font-size: 12px; color: var(--text-secondary); margin-top: 8px; font-style: italic; border-top: 0.5px solid var(--border-tertiary); padding-top: 8px; }
+
+  /* PREP CHECKLIST */
+  .prep-item-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--border-tertiary); }
+  .prep-item-row:last-child { border-bottom: none; }
+  .prep-check { width: 20px; height: 20px; border-radius: 4px; border: 0.5px solid var(--border-secondary); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: transparent; font-size: 12px; transition: all 0.15s; }
+  .prep-check.done { background: var(--green-bg); border-color: var(--green); color: var(--green-text); }
+  .prep-text { font-size: 13px; color: var(--text-primary); flex: 1; }
+  .prep-text.done { text-decoration: line-through; color: var(--text-tertiary); }
+  .prep-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+  footer { text-align: center; font-size: 12px; color: var(--text-tertiary); padding: 20px 0 8px; }
 </style>
 </head>
 <body>
@@ -209,17 +204,37 @@
   <span class="sub">3-day program</span>
 </header>
 
+<div id="prep-banner">
+  <i class="ti ti-bell" aria-hidden="true"></i>
+  <span id="prep-banner-text"></span>
+  <button class="dismiss" onclick="dismissPrepBanner()" aria-label="Dismiss">&times;</button>
+</div>
+
 <div class="container">
   <div class="tabs">
     <button class="tab active" onclick="showTab('tracker')"><i class="ti ti-checkbox" aria-hidden="true"></i>Today</button>
+    <button class="tab" onclick="showTab('live')"><i class="ti ti-clock-play" aria-hidden="true"></i>Schedule</button>
     <button class="tab" onclick="showTab('timer')"><i class="ti ti-clock" aria-hidden="true"></i>Timer</button>
-    <button class="tab" onclick="showTab('dashboard')"><i class="ti ti-chart-bar" aria-hidden="true"></i>Dashboard</button>
+    <button class="tab" onclick="showTab('prep')"><i class="ti ti-list-check" aria-hidden="true"></i>Prep</button>
+    <button class="tab" onclick="showTab('dashboard')"><i class="ti ti-chart-bar" aria-hidden="true"></i>Stats</button>
+    <button class="tab" onclick="showTab('reintro')"><i class="ti ti-salad" aria-hidden="true"></i>Day 4+</button>
+    <button class="tab" onclick="showTab('history')"><i class="ti ti-history" aria-hidden="true"></i>History</button>
   </div>
 
-  <!-- TRACKER -->
+  <!-- TODAY TRACKER -->
   <div id="tab-tracker" class="panel active">
     <div class="day-selector" id="day-selector"></div>
     <div id="tracker-content"></div>
+  </div>
+
+  <!-- LIVE SCHEDULE -->
+  <div id="tab-live" class="panel">
+    <div class="card" style="padding-bottom:6px;">
+      <div class="section-title" style="margin-bottom:4px;">Live daily schedule</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;">Auto-updates every minute. <span style="background:var(--green-bg);color:var(--green-text);padding:1px 7px;border-radius:99px;font-size:11px;">Now</span> = current · <span style="background:var(--amber-bg);color:var(--amber-text);padding:1px 7px;border-radius:99px;font-size:11px;">Next</span> = coming up</div>
+      <div class="day-selector" id="live-day-selector"></div>
+      <div id="live-schedule-rows"></div>
+    </div>
   </div>
 
   <!-- TIMER -->
@@ -234,7 +249,7 @@
       <div class="section-title">Set your next juice</div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
         <input type="time" id="next-juice-time" />
-        <select id="next-juice-select" style="flex:1;min-width:160px;">
+        <select id="next-juice-select" style="flex:1;min-width:150px;">
           <option>Warm lemon water</option>
           <option>Sunrise Immunity</option>
           <option>Green Detox</option>
@@ -242,299 +257,536 @@
           <option>Watermelon Refresh</option>
           <option>Warm herbal tea</option>
         </select>
-        <button class="action-btn" onclick="setManualTimer()"><i class="ti ti-player-play" style="font-size:14px;vertical-align:-2px;" aria-hidden="true"></i> Start</button>
+        <button class="action-btn" onclick="setManualTimer()"><i class="ti ti-player-play" style="font-size:13px;vertical-align:-2px;" aria-hidden="true"></i> Start</button>
       </div>
     </div>
   </div>
 
-  <!-- DASHBOARD -->
+  <!-- PREP CHECKLIST -->
+  <div id="tab-prep" class="panel">
+    <div class="card">
+      <div class="section-title" id="prep-title">Night-before prep checklist</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;" id="prep-subtitle"></div>
+      <div id="prep-list"></div>
+      <button class="action-btn" style="margin-top:12px;" onclick="resetPrep()"><i class="ti ti-refresh" style="font-size:13px;vertical-align:-2px;" aria-hidden="true"></i> Reset checklist</button>
+    </div>
+    <div class="card">
+      <div class="section-title">Switch prep day</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="day-btn" onclick="setPrepDay(0)" id="prep-d0">Before Day 1</button>
+        <button class="day-btn" onclick="setPrepDay(1)" id="prep-d1">Before Day 2</button>
+        <button class="day-btn" onclick="setPrepDay(2)" id="prep-d2">Before Day 3</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD / STATS -->
   <div id="tab-dashboard" class="panel">
     <div class="metric-grid" id="metric-grid"></div>
     <div class="card">
       <div class="section-title">Day-by-day progress</div>
       <div class="streak-row" id="streak-row"></div>
       <div class="legend">
-        <span class="legend-item"><span class="legend-dot" style="background:#EAF3DE;border:0.5px solid #639922;"></span>Complete</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#FAEEDA;border:0.5px solid #BA7517;"></span>Partial</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--green-bg);border:0.5px solid var(--green);"></span>Complete</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--amber-bg);border:0.5px solid var(--amber);"></span>Partial</span>
         <span class="legend-item"><span class="legend-dot" style="background:var(--bg-secondary);border:0.5px solid var(--border-primary);"></span>Today</span>
       </div>
     </div>
     <div class="card">
       <div class="section-title">Why I'm doing this cleanse</div>
       <div class="why-display" id="why-display">Write your reason below — read this when cravings hit.</div>
-      <div class="motivation-q">Your personal reason stays here between sessions.</div>
-      <textarea class="motivation-input" id="why-input" placeholder="e.g. I want to feel lighter, reset my eating habits, and prove to myself I can do this..."></textarea>
-      <button class="action-btn" onclick="saveWhy()"><i class="ti ti-device-floppy" style="font-size:14px;vertical-align:-2px;" aria-hidden="true"></i> Save</button>
+      <textarea class="motivation-input" id="why-input" placeholder="e.g. I want to feel lighter and reset my eating habits..."></textarea>
+      <button class="action-btn" onclick="saveWhy()"><i class="ti ti-device-floppy" style="font-size:13px;vertical-align:-2px;" aria-hidden="true"></i> Save</button>
     </div>
     <div class="card">
       <div class="section-title">Craving log</div>
-      <div id="craving-log-list" style="margin-bottom:10px;max-height:180px;overflow-y:auto;"></div>
-      <textarea class="motivation-input" id="craving-input" placeholder="Log a craving or moment of temptation..." style="min-height:48px;"></textarea>
-      <button class="action-btn" onclick="logCraving()"><i class="ti ti-plus" style="font-size:14px;vertical-align:-2px;" aria-hidden="true"></i> Log it</button>
+      <div id="craving-log-list" style="margin-bottom:10px;max-height:160px;overflow-y:auto;"></div>
+      <textarea class="motivation-input" id="craving-input" placeholder="Log a craving moment..." style="min-height:44px;"></textarea>
+      <button class="action-btn" onclick="logCraving()"><i class="ti ti-plus" style="font-size:13px;vertical-align:-2px;" aria-hidden="true"></i> Log it</button>
     </div>
     <div class="tip-box" id="tip-box"></div>
-    <div style="text-align:center;margin-top:16px;">
+    <div style="text-align:center;margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button class="action-btn" onclick="saveToHistory()"><i class="ti ti-archive" style="font-size:13px;vertical-align:-2px;" aria-hidden="true"></i> Save cleanse to history</button>
       <button class="reset-link" onclick="resetAll()">Reset all progress</button>
     </div>
   </div>
 
-  <footer>Your progress is saved locally in your browser.</footer>
+  <!-- DAY 4+ REINTRODUCTION -->
+  <div id="tab-reintro" class="panel">
+    <div class="card">
+      <div class="section-title">Day 4+ reintroduction plan</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Your digestive system has been resting for 3 days. Reintroduce food slowly — rushing back to solid meals will make you feel awful and undo much of the benefit.</div>
+      <div class="reintr-grid" id="reintr-grid"></div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:500;margin-bottom:8px;">Foods to avoid for 48 hours after the cleanse</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">
+        <div>🚫 Red meat, fried food, or fast food</div>
+        <div>🚫 Alcohol or caffeine (go gentle for 1–2 days)</div>
+        <div>🚫 Processed sugar, pastries, candy</div>
+        <div>🚫 Heavy dairy (hard cheese, ice cream)</div>
+        <div>🚫 Raw cruciferous veg in large amounts (can cause bloat)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:500;margin-bottom:8px;">Signs the reintroduction is going well</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">
+        <div>✅ Digestion feels smooth and regular</div>
+        <div>✅ No bloating or cramping after meals</div>
+        <div>✅ Energy stays stable through the day</div>
+        <div>✅ Cravings for sugar and processed food feel reduced</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="tab-history" class="panel">
+    <div class="card">
+      <div class="section-title">Cleanse history</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;">Each saved cleanse is stored here so you can track patterns over time.</div>
+      <div id="history-list"></div>
+    </div>
+  </div>
+
+  <footer>Progress saved in your browser · <span onclick="resetAll()" style="cursor:pointer;text-decoration:underline;">Reset</span></footer>
 </div>
 
 <script>
+/* ── DATA ── */
 const SCHEDULE = [
-  {day:1,label:"reset & ease in",slots:[
-    {time:"8:00 AM",juice:"Warm lemon water",oz:10,badge:"b-blue",ingr:""},
-    {time:"9:00 AM",juice:"Sunrise Immunity",oz:16,badge:"b-amber",ingr:"Orange · Carrot · Lemon · Turmeric · Pineapple"},
-    {time:"11:30 AM",juice:"Green Detox",oz:16,badge:"b-green",ingr:"Kale · Cucumber · Celery · Lemon · Ginger · Apple"},
-    {time:"2:00 PM",juice:"Sunrise Immunity",oz:16,badge:"b-amber",ingr:"Orange · Carrot · Lemon · Turmeric · Pineapple"},
-    {time:"4:30 PM",juice:"Watermelon Refresh",oz:14,badge:"b-pink",ingr:"Watermelon · Cucumber · Lemon"},
-    {time:"7:00 PM",juice:"Green Detox",oz:16,badge:"b-green",ingr:"Kale · Cucumber · Celery · Lemon · Ginger · Apple"},
-    {time:"9:30 PM",juice:"Warm herbal tea",oz:8,badge:"b-gray",ingr:""}
+  {day:1, label:"reset & ease in", slots:[
+    {time:"8:00 AM", h:8,  m:0,  juice:"Warm lemon water",    oz:10, badge:"b-blue",  ingr:""},
+    {time:"9:00 AM", h:9,  m:0,  juice:"Sunrise Immunity",    oz:16, badge:"b-amber", ingr:"Orange · Carrot · Lemon · Turmeric · Pineapple"},
+    {time:"11:30 AM",h:11, m:30, juice:"Green Detox",         oz:16, badge:"b-green", ingr:"Kale · Cucumber · Celery · Lemon · Ginger · Apple"},
+    {time:"2:00 PM", h:14, m:0,  juice:"Sunrise Immunity",    oz:16, badge:"b-amber", ingr:"Orange · Carrot · Lemon · Turmeric · Pineapple"},
+    {time:"4:30 PM", h:16, m:30, juice:"Watermelon Refresh",  oz:14, badge:"b-pink",  ingr:"Watermelon · Cucumber · Lemon"},
+    {time:"7:00 PM", h:19, m:0,  juice:"Green Detox",         oz:16, badge:"b-green", ingr:"Kale · Cucumber · Celery · Lemon · Ginger · Apple"},
+    {time:"9:30 PM", h:21, m:30, juice:"Warm herbal tea",     oz:8,  badge:"b-gray",  ingr:""}
   ]},
-  {day:2,label:"the deep cleanse",slots:[
-    {time:"8:00 AM",juice:"Warm lemon water",oz:10,badge:"b-blue",ingr:""},
-    {time:"9:00 AM",juice:"Green Detox",oz:16,badge:"b-green",ingr:"Kale · Cucumber · Celery · Lemon · Ginger · Apple"},
-    {time:"11:30 AM",juice:"Sunrise Immunity",oz:16,badge:"b-amber",ingr:"Orange · Carrot · Lemon · Turmeric · Pineapple"},
-    {time:"2:00 PM",juice:"Watermelon Refresh",oz:14,badge:"b-pink",ingr:"Watermelon · Cucumber · Lemon"},
-    {time:"4:30 PM",juice:"Green Detox",oz:16,badge:"b-green",ingr:"Kale · Cucumber · Celery · Lemon · Ginger · Apple"},
-    {time:"7:00 PM",juice:"Sunrise Immunity",oz:16,badge:"b-amber",ingr:"Orange · Carrot · Lemon · Turmeric · Pineapple"},
-    {time:"9:30 PM",juice:"Warm herbal tea",oz:8,badge:"b-gray",ingr:""}
+  {day:2, label:"the deep cleanse", slots:[
+    {time:"8:00 AM", h:8,  m:0,  juice:"Warm lemon water",    oz:10, badge:"b-blue",  ingr:""},
+    {time:"9:00 AM", h:9,  m:0,  juice:"Green Detox",         oz:16, badge:"b-green", ingr:"Kale · Cucumber · Celery · Lemon · Ginger · Apple"},
+    {time:"11:30 AM",h:11, m:30, juice:"Sunrise Immunity",    oz:16, badge:"b-amber", ingr:"Orange · Carrot · Lemon · Turmeric · Pineapple"},
+    {time:"2:00 PM", h:14, m:0,  juice:"Watermelon Refresh",  oz:14, badge:"b-pink",  ingr:"Watermelon · Cucumber · Lemon"},
+    {time:"4:30 PM", h:16, m:30, juice:"Green Detox",         oz:16, badge:"b-green", ingr:"Kale · Cucumber · Celery · Lemon · Ginger · Apple"},
+    {time:"7:00 PM", h:19, m:0,  juice:"Sunrise Immunity",    oz:16, badge:"b-amber", ingr:"Orange · Carrot · Lemon · Turmeric · Pineapple"},
+    {time:"9:30 PM", h:21, m:30, juice:"Warm herbal tea",     oz:8,  badge:"b-gray",  ingr:""}
   ]},
-  {day:3,label:"restore & glow",slots:[
-    {time:"8:00 AM",juice:"Warm lemon water",oz:10,badge:"b-blue",ingr:""},
-    {time:"9:00 AM",juice:"Golden Glow",oz:16,badge:"b-amber",ingr:"Carrots · Turmeric · Ginger · Orange · Pineapple"},
-    {time:"11:30 AM",juice:"Green Detox",oz:16,badge:"b-green",ingr:"Kale · Cucumber · Celery · Lemon · Ginger · Apple"},
-    {time:"2:00 PM",juice:"Golden Glow",oz:16,badge:"b-amber",ingr:"Carrots · Turmeric · Ginger · Orange · Pineapple"},
-    {time:"4:30 PM",juice:"Watermelon Refresh",oz:14,badge:"b-pink",ingr:"Watermelon · Cucumber · Lemon"},
-    {time:"7:00 PM",juice:"Golden Glow",oz:16,badge:"b-amber",ingr:"Carrots · Turmeric · Ginger · Orange · Pineapple"},
-    {time:"9:30 PM",juice:"Warm herbal tea",oz:8,badge:"b-gray",ingr:""}
+  {day:3, label:"restore & glow", slots:[
+    {time:"8:00 AM", h:8,  m:0,  juice:"Warm lemon water",    oz:10, badge:"b-blue",  ingr:""},
+    {time:"9:00 AM", h:9,  m:0,  juice:"Golden Glow",         oz:16, badge:"b-amber", ingr:"Carrots · Turmeric · Ginger · Orange · Pineapple"},
+    {time:"11:30 AM",h:11, m:30, juice:"Green Detox",         oz:16, badge:"b-green", ingr:"Kale · Cucumber · Celery · Lemon · Ginger · Apple"},
+    {time:"2:00 PM", h:14, m:0,  juice:"Golden Glow",         oz:16, badge:"b-amber", ingr:"Carrots · Turmeric · Ginger · Orange · Pineapple"},
+    {time:"4:30 PM", h:16, m:30, juice:"Watermelon Refresh",  oz:14, badge:"b-pink",  ingr:"Watermelon · Cucumber · Lemon"},
+    {time:"7:00 PM", h:19, m:0,  juice:"Golden Glow",         oz:16, badge:"b-amber", ingr:"Carrots · Turmeric · Ginger · Orange · Pineapple"},
+    {time:"9:30 PM", h:21, m:30, juice:"Warm herbal tea",     oz:8,  badge:"b-gray",  ingr:""}
   ]}
 ];
 
+const PREP = [
+  { // Before Day 1
+    title:"Batch A prep — for Days 1 & 2",
+    subtitle:"Make these tonight. Fill jars to the brim, seal tightly, store in fridge at 38°F or below.",
+    items:[
+      {text:"Juice Sunrise Immunity batch", sub:"Make 4 servings (64 oz total) — enough for Days 1 & 2"},
+      {text:"Juice Green Detox batch",      sub:"Make 4 servings (64 oz total) — enough for Days 1 & 2"},
+      {text:"Juice Watermelon Refresh",     sub:"Make 2 servings (28 oz) — Day 1 afternoon + Day 2 lunch"},
+      {text:"Fill all jars to the top",     sub:"No air gaps — keeps juice fresh longer"},
+      {text:"Label each jar with day & time",sub:"e.g. 'Day 1 – 9am – Sunrise Immunity'"},
+      {text:"Set lemon water reminder",     sub:"Just need half a lemon per morning — have lemons ready"},
+      {text:"Lay out herbal tea bags",      sub:"Chamomile or peppermint — no caffeine"}
+    ]
+  },
+  { // Before Day 2
+    title:"Mid-cleanse check-in",
+    subtitle:"Day 1 is done — you're already a third of the way through. Here's what to check tonight.",
+    items:[
+      {text:"Check juice freshness",        sub:"Sniff and inspect each jar — discard anything that smells off"},
+      {text:"Top up jars if any headspace", sub:"Re-seal to minimize air contact"},
+      {text:"Check watermelon refresh supply",sub:"You need 1 more serving for Day 2 lunch — make more if needed"},
+      {text:"Prepare tomorrow's lemon",     sub:"Have a fresh lemon ready for the 8am ritual"},
+      {text:"Refill water pitcher",         sub:"Aim for 40+ oz of plain water on top of juices tomorrow"},
+      {text:"Plan for Day 2 energy dip",    sub:"Lightest day possible — avoid hard workouts or stressful plans"},
+      {text:"Set out Golden Glow ingredients",sub:"Day 3 will use these — start defrosting anything frozen"}
+    ]
+  },
+  { // Before Day 3
+    title:"Batch B prep — for Day 3 only",
+    subtitle:"Golden Glow is new today. Make it fresh tonight for maximum flavor and nutrition.",
+    items:[
+      {text:"Juice Golden Glow batch",      sub:"Make 3 servings (48 oz) — used at 9am, 2pm, and 7pm on Day 3"},
+      {text:"Juice Watermelon Refresh",     sub:"1 serving (14 oz) for 4:30pm"},
+      {text:"Juice Green Detox",            sub:"1 serving (16 oz) for 11:30am"},
+      {text:"Label and refrigerate all",    sub:"Fill to the brim, dark glass if possible"},
+      {text:"Plan your Day 4 re-entry meal",sub:"Have soft fruit, broth, or yogurt ready for tomorrow morning"},
+      {text:"Celebrate — you're almost done!",sub:"Day 3 is the best day. You'll feel it."}
+    ]
+  }
+];
+
+const REINTRO = [
+  {day:"Day 4 — morning", title:"Fruit & liquid only", color:"var(--green)", foods:["Fresh fruit (watermelon, banana, melon, berries)","Coconut water or diluted fresh juice","Herbal tea or warm lemon water","Fruit smoothie (no dairy yet)"], warn:"No solid meals yet. Your stomach needs gentle reactivation."},
+  {day:"Day 4 — afternoon", title:"Soft cooked foods", color:"var(--green)", foods:["Vegetable broth or miso soup","Steamed or boiled vegetables (carrot, zucchini, sweet potato)","Plain rice or rice porridge","Avocado on its own"], warn:"Eat slowly and chew thoroughly — your digestive enzymes are just waking up."},
+  {day:"Day 5", title:"Light proteins & grains", color:"var(--amber)", foods:["Soft-boiled or poached eggs","Plain yogurt or kefir (small amount)","Oatmeal with fruit","Lentil or vegetable soup","Steamed fish (if you eat it)"], warn:"Introduce one new food at a time so you can notice what your body responds to."},
+  {day:"Day 6", title:"Normal light eating", color:"#378ADD", foods:["Salads with light dressing","Grilled chicken or fish","Whole grains (quinoa, brown rice)","Legumes (chickpeas, lentils)","Raw fruit and vegetables"], warn:"Still avoiding alcohol, red meat, fried food, and heavy dairy today."},
+  {day:"Day 7+", title:"Full diet resumes", color:"var(--text-tertiary)", foods:["Return to your normal diet gradually","Keep one fresh juice per day if you enjoyed it","Notice which foods feel heavy or cause bloating","Consider repeating the cleanse in 4–6 weeks"], warn:""}
+];
+
 const TIPS = [
-  "Craving solid food? Chew on cucumber slices — it satisfies the urge without breaking the cleanse.",
+  "Craving solid food? Chew on cucumber slices — satisfies the urge without breaking the cleanse.",
   "Headachy on Day 2? That's usually caffeine withdrawal. Drink extra water and rest.",
-  "Fill every juice jar to the absolute brim before storing — less air contact means fresher juice.",
-  "Feeling low energy? A short 10-minute walk boosts circulation without draining your reserves.",
+  "Fill every juice jar to the absolute brim — less air contact means fresher juice.",
+  "Feeling low energy? A 10-minute walk boosts circulation without draining your reserves.",
   "Tell someone you trust about your cleanse — accountability makes a real difference.",
-  "If a juice tastes off, squeeze more lemon in. Lemon fixes almost everything.",
-  "Remember: Day 3 feels noticeably better than Day 2 for almost everyone. Keep going."
+  "If a juice tastes off, add more lemon. Lemon fixes almost everything.",
+  "Day 3 feels noticeably better than Day 2 for almost everyone. Keep going."
 ];
 
 const BADGE_LABELS = {'b-green':'green detox','b-amber':'energizing','b-pink':'hydrating','b-blue':'ritual','b-gray':'wind down'};
 
-function loadState() {
-  try { return JSON.parse(localStorage.getItem('juice-cleanse-state') || '{}'); } catch(e) { return {}; }
-}
-function saveState(s) {
-  try { localStorage.setItem('juice-cleanse-state', JSON.stringify(s)); } catch(e) {}
-}
+/* ── STATE ── */
+function loadState() { try { return JSON.parse(localStorage.getItem('jct-v2')||'{}'); } catch(e){ return {}; } }
+function saveState(s){ try { localStorage.setItem('jct-v2', JSON.stringify(s)); } catch(e){} }
 
 let state = loadState();
-if (!state.checks) state.checks = {};
-if (!state.why) state.why = '';
-if (!state.cravings) state.cravings = [];
-if (!state.activeDay) state.activeDay = 1;
+if(!state.checks)   state.checks   = {};
+if(!state.why)      state.why      = '';
+if(!state.cravings) state.cravings = [];
+if(!state.activeDay)state.activeDay= 1;
+if(!state.liveDay)  state.liveDay  = 1;
+if(!state.prepDay)  state.prepDay  = 0;
+if(!state.prepChecks)state.prepChecks={};
+if(!state.history)  state.history  = [];
+if(!state.prepDismissed)state.prepDismissed=false;
 
-let timerInterval = null;
-let targetTime = null;
-let nextJuiceName = '';
+let timerInterval=null, liveInterval=null, targetTime=null, nextJuiceName='';
 
-function renderAll() {
-  renderDaySelector();
-  renderTracker();
-  renderDashboard();
-  renderCravingLog();
-  document.getElementById('why-display').textContent = state.why || 'Write your reason below — read this when cravings hit.';
-  if (state.why) document.getElementById('why-input').value = state.why;
-  document.getElementById('tip-box').innerHTML = '<i class="ti ti-bulb" aria-hidden="true"></i> ' + TIPS[Math.floor(Math.random() * TIPS.length)];
+/* ── PREP BANNER ── */
+function checkPrepBanner(){
+  if(state.prepDismissed) return;
+  const now = new Date();
+  const h = now.getHours();
+  // Show between 7pm–11pm as a prep reminder for next day
+  if(h >= 19 && h < 23){
+    const tomorrow = state.activeDay < 3 ? state.activeDay + 1 : null;
+    if(tomorrow){
+      const banner = document.getElementById('prep-banner');
+      document.getElementById('prep-banner-text').textContent =
+        `Tonight is a great time to prep your juices for Day ${tomorrow}! Head to the Prep tab.`;
+      banner.style.display = 'flex';
+    }
+  }
+}
+function dismissPrepBanner(){
+  state.prepDismissed = true;
+  saveState(state);
+  document.getElementById('prep-banner').style.display='none';
 }
 
-function renderDaySelector() {
-  document.getElementById('day-selector').innerHTML = [1,2,3].map(d =>
+/* ── TABS ── */
+const TAB_IDS = ['tracker','live','timer','prep','dashboard','reintro','history'];
+function showTab(tab){
+  TAB_IDS.forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+  });
+  document.querySelectorAll('.tab').forEach((btn,i) => {
+    btn.classList.toggle('active', TAB_IDS[i]===tab);
+  });
+  if(tab==='live') renderLiveSchedule();
+  if(tab==='history') renderHistory();
+  if(tab==='reintro') renderReintro();
+  if(tab==='prep') renderPrep();
+}
+
+/* ── TRACKER ── */
+function renderDaySelector(){
+  document.getElementById('day-selector').innerHTML = [1,2,3].map(d=>
     `<button class="day-btn${state.activeDay===d?' active':''}" onclick="setDay(${d})">Day ${d}</button>`
   ).join('');
 }
+function setDay(d){ state.activeDay=d; saveState(state); renderDaySelector(); renderTracker(); }
 
-function setDay(d) {
-  state.activeDay = d;
-  saveState(state);
-  renderDaySelector();
-  renderTracker();
-}
-
-function renderTracker() {
+function renderTracker(){
   const d = state.activeDay;
   const dayData = SCHEDULE[d-1];
-  const checks = state.checks[d] || {};
+  const checks = state.checks[d]||{};
   const total = dayData.slots.length;
   const done = Object.values(checks).filter(v=>v==='done').length;
   const pct = Math.round((done/total)*100);
   const barColor = pct===100?'#639922':pct>50?'#BA7517':'#378ADD';
-
   let html = `<div class="card">
-    <div class="section-title" style="margin-bottom:8px;">Day ${d} — ${dayData.label}</div>
+    <div class="section-title" style="margin-bottom:6px;">Day ${d} — ${dayData.label}</div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
       <div style="flex:1;"><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${pct}%;background:${barColor};"></div></div></div>
-      <span style="font-size:13px;font-weight:500;color:var(--text-primary);min-width:36px;">${done}/${total}</span>
+      <span style="font-size:13px;font-weight:500;min-width:34px;">${done}/${total}</span>
     </div>
     <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">${pct}% complete today</div>`;
-
-  dayData.slots.forEach((s, i) => {
-    const status = checks[i] || 'pending';
-    const iconClass = status==='done'?'ti-check':status==='skipped'?'ti-x':'ti-circle';
+  dayData.slots.forEach((s,i)=>{
+    const status = checks[i]||'pending';
+    const icon = status==='done'?'ti-check':status==='skipped'?'ti-x':'ti-circle';
     html += `<div class="juice-row">
-      <button class="check-btn${status==='done'?' done':status==='skipped'?' skipped':''}" onclick="toggleCheck(${d},${i})" aria-label="${s.juice}">
-        <i class="ti ${iconClass}" aria-hidden="true"></i>
+      <button class="check-btn${status==='done'?' done':status==='skipped'?' skipped':''}" onclick="toggleCheck(${d},${i})">
+        <i class="ti ${icon}" aria-hidden="true"></i>
       </button>
       <div class="juice-info">
         <div class="juice-name${status==='done'?' done':''}">${s.juice} <span style="font-size:11px;font-weight:400;color:var(--text-tertiary);">${s.time}</span></div>
-        <div class="juice-meta">
-          <span class="badge ${s.badge}">${BADGE_LABELS[s.badge]||''}</span>
-          ${s.ingr?`<span style="font-size:11px;color:var(--text-tertiary);">${s.ingr}</span>`:''}
-        </div>
+        <div class="juice-meta"><span class="badge ${s.badge}">${BADGE_LABELS[s.badge]||''}</span>${s.ingr?`<span style="font-size:11px;color:var(--text-tertiary);">${s.ingr}</span>`:''}</div>
       </div>
       <span class="oz-badge">${s.oz} oz</span>
-      ${status==='pending'?`<button class="skip-btn" onclick="skipCheck(${d},${i})" title="Skip"><i class="ti ti-player-skip-forward" style="font-size:13px;" aria-hidden="true"></i></button>`:''}
+      ${status==='pending'?`<button class="skip-btn" onclick="skipCheck(${d},${i})" title="Skip"><i class="ti ti-player-skip-forward" style="font-size:12px;" aria-hidden="true"></i></button>`:''}
     </div>`;
   });
   html += `</div>`;
   document.getElementById('tracker-content').innerHTML = html;
 }
 
-function toggleCheck(day, idx) {
-  if (!state.checks[day]) state.checks[day] = {};
-  const cur = state.checks[day][idx] || 'pending';
-  state.checks[day][idx] = cur==='done' ? 'pending' : 'done';
-  saveState(state);
-  renderTracker();
-  renderDashboard();
+function toggleCheck(day,idx){
+  if(!state.checks[day]) state.checks[day]={};
+  state.checks[day][idx] = (state.checks[day][idx]||'pending')==='done'?'pending':'done';
+  saveState(state); renderTracker(); renderDashboard();
+}
+function skipCheck(day,idx){
+  if(!state.checks[day]) state.checks[day]={};
+  state.checks[day][idx]='skipped';
+  saveState(state); renderTracker(); renderDashboard();
 }
 
-function skipCheck(day, idx) {
-  if (!state.checks[day]) state.checks[day] = {};
-  state.checks[day][idx] = 'skipped';
-  saveState(state);
-  renderTracker();
-  renderDashboard();
+/* ── LIVE SCHEDULE ── */
+function renderLiveDaySelector(){
+  document.getElementById('live-day-selector').innerHTML = [1,2,3].map(d=>
+    `<button class="day-btn${state.liveDay===d?' active':''}" onclick="setLiveDay(${d})">Day ${d}</button>`
+  ).join('');
+}
+function setLiveDay(d){ state.liveDay=d; saveState(state); renderLiveDaySelector(); renderLiveSchedule(); }
+
+function renderLiveSchedule(){
+  renderLiveDaySelector();
+  const now = new Date();
+  const nowMin = now.getHours()*60 + now.getMinutes();
+  const slots = SCHEDULE[state.liveDay-1].slots;
+
+  // Find current and next
+  let currentIdx = -1, nextIdx = -1;
+  for(let i=0;i<slots.length;i++){
+    const slotMin = slots[i].h*60 + slots[i].m;
+    const nextSlotMin = i+1<slots.length ? slots[i+1].h*60+slots[i+1].m : 1440;
+    if(nowMin >= slotMin && nowMin < nextSlotMin){ currentIdx=i; nextIdx=i+1<slots.length?i+1:-1; break; }
+  }
+  if(currentIdx===-1 && nowMin < slots[0].h*60+slots[0].m){ nextIdx=0; }
+
+  let html = '';
+  slots.forEach((s,i)=>{
+    const slotMin = s.h*60+s.m;
+    const isPast    = nowMin > slotMin && i!==currentIdx;
+    const isCurrent = i===currentIdx;
+    const isNext    = i===nextIdx;
+    const rowClass  = isCurrent?'live-current':isNext?'live-next':isPast?'live-past':'';
+    const pill      = isCurrent?'<span class="live-pill pill-now">Now</span>':isNext?'<span class="live-pill pill-next">Next</span>':'';
+    html += `<div class="live-row ${rowClass}">
+      <div class="live-time">${s.time}</div>
+      <div style="flex:1;">
+        <div class="live-name">${s.juice}</div>
+        <div class="live-oz">${s.oz} oz${s.ingr?` · <span style="color:var(--text-tertiary)">${s.ingr}</span>`:''}</div>
+      </div>
+      ${pill}
+    </div>`;
+  });
+  document.getElementById('live-schedule-rows').innerHTML = html;
 }
 
-function renderDashboard() {
-  let totalJ=0, doneJ=0, skippedJ=0;
-  [1,2,3].forEach(d => {
-    SCHEDULE[d-1].slots.forEach((_,i) => {
-      totalJ++;
+/* ── PREP CHECKLIST ── */
+function setPrepDay(d){
+  state.prepDay=d; saveState(state);
+  document.querySelectorAll('[id^=prep-d]').forEach((b,i)=>b.classList.toggle('active',i===d));
+  renderPrep();
+}
+
+function renderPrep(){
+  const p = PREP[state.prepDay];
+  document.getElementById('prep-title').textContent = p.title;
+  document.getElementById('prep-subtitle').textContent = p.subtitle;
+  const checks = state.prepChecks[state.prepDay]||{};
+  let html='';
+  p.items.forEach((item,i)=>{
+    const done = !!checks[i];
+    html += `<div class="prep-item-row">
+      <button class="prep-check${done?' done':''}" onclick="togglePrep(${i})">
+        <i class="ti ${done?'ti-check':''}" aria-hidden="true"></i>
+      </button>
+      <div>
+        <div class="prep-text${done?' done':''}">${item.text}</div>
+        <div class="prep-sub">${item.sub}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('prep-list').innerHTML=html;
+  [0,1,2].forEach(i=>document.getElementById('prep-d'+i).classList.toggle('active',i===state.prepDay));
+}
+
+function togglePrep(idx){
+  if(!state.prepChecks[state.prepDay]) state.prepChecks[state.prepDay]={};
+  state.prepChecks[state.prepDay][idx] = !state.prepChecks[state.prepDay][idx];
+  saveState(state); renderPrep();
+}
+function resetPrep(){
+  state.prepChecks[state.prepDay]={};
+  saveState(state); renderPrep();
+}
+
+/* ── DASHBOARD ── */
+function renderDashboard(){
+  let totalJ=0,doneJ=0,skippedJ=0;
+  [1,2,3].forEach(d=>{
+    SCHEDULE[d-1].slots.forEach((_,i)=>{ totalJ++;
       const v=(state.checks[d]||{})[i];
-      if(v==='done') doneJ++;
-      if(v==='skipped') skippedJ++;
+      if(v==='done') doneJ++; if(v==='skipped') skippedJ++;
     });
   });
-  const pct = Math.round((doneJ/totalJ)*100);
-  const completedDays = [1,2,3].filter(d => SCHEDULE[d-1].slots.every((_,i)=>(state.checks[d]||{})[i]==='done')).length;
-
-  document.getElementById('metric-grid').innerHTML = `
+  const pct=Math.round((doneJ/totalJ)*100);
+  const completedDays=[1,2,3].filter(d=>SCHEDULE[d-1].slots.every((_,i)=>(state.checks[d]||{})[i]==='done')).length;
+  document.getElementById('metric-grid').innerHTML=`
     <div class="metric"><div class="metric-label">Overall progress</div><div class="metric-val">${pct}%</div><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${pct}%;background:#639922;"></div></div></div>
     <div class="metric"><div class="metric-label">Juices done</div><div class="metric-val">${doneJ}<span style="font-size:14px;color:var(--text-secondary);">/${totalJ}</span></div></div>
     <div class="metric"><div class="metric-label">Days complete</div><div class="metric-val">${completedDays}<span style="font-size:14px;color:var(--text-secondary);">/3</span></div></div>
-    <div class="metric"><div class="metric-label">Skipped</div><div class="metric-val" style="color:${skippedJ>0?'#BA7517':'var(--text-primary)'};">${skippedJ}</div></div>
-  `;
-
-  document.getElementById('streak-row').innerHTML = [1,2,3].map(d => {
-    const checks = state.checks[d]||{};
-    const total = SCHEDULE[d-1].slots.length;
-    const done = Object.values(checks).filter(v=>v==='done').length;
-    const isToday = d===state.activeDay;
-    const cls = done===total?'complete':done>0?'partial':isToday?'today':'';
+    <div class="metric"><div class="metric-label">Skipped</div><div class="metric-val" style="color:${skippedJ>0?'#BA7517':'var(--text-primary)'};">${skippedJ}</div></div>`;
+  document.getElementById('streak-row').innerHTML=[1,2,3].map(d=>{
+    const checks=state.checks[d]||{};
+    const total=SCHEDULE[d-1].slots.length;
+    const done=Object.values(checks).filter(v=>v==='done').length;
+    const cls=done===total?'complete':done>0?'partial':d===state.activeDay?'today':'';
     return `<div class="streak-dot ${cls}" title="Day ${d}: ${done}/${total}">D${d}</div>`;
   }).join('');
 }
 
-function renderCravingLog() {
-  const list = document.getElementById('craving-log-list');
-  if (!state.cravings.length) {
-    list.innerHTML = `<div style="font-size:12px;color:var(--text-tertiary);padding:4px 0;">No cravings logged yet — you're crushing it.</div>`;
-    return;
-  }
-  list.innerHTML = state.cravings.slice(-8).reverse().map(c =>
-    `<div style="font-size:12px;color:var(--text-secondary);padding:6px 0;border-bottom:0.5px solid var(--border-tertiary);">
-      <span style="color:var(--text-tertiary);margin-right:6px;">${c.time}</span>${c.text}
-    </div>`
+function renderCravingLog(){
+  const list=document.getElementById('craving-log-list');
+  if(!state.cravings.length){ list.innerHTML=`<div style="font-size:12px;color:var(--text-tertiary);padding:4px 0;">No cravings logged — you're crushing it.</div>`; return; }
+  list.innerHTML=state.cravings.slice(-8).reverse().map(c=>
+    `<div style="font-size:12px;color:var(--text-secondary);padding:5px 0;border-bottom:0.5px solid var(--border-tertiary);"><span style="color:var(--text-tertiary);margin-right:6px;">${c.time}</span>${c.text}</div>`
   ).join('');
 }
 
-function logCraving() {
-  const inp = document.getElementById('craving-input');
-  const txt = inp.value.trim();
-  if (!txt) return;
-  const now = new Date();
-  const time = `Day ${state.activeDay} ${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
-  state.cravings.push({time, text: txt});
-  inp.value = '';
+function logCraving(){
+  const inp=document.getElementById('craving-input');
+  const txt=inp.value.trim(); if(!txt)return;
+  const now=new Date();
+  state.cravings.push({time:`Day ${state.activeDay} ${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`,text:txt});
+  inp.value=''; saveState(state); renderCravingLog();
+}
+function saveWhy(){
+  const v=document.getElementById('why-input').value.trim(); if(!v)return;
+  state.why=v; saveState(state);
+  document.getElementById('why-display').textContent=v;
+}
+
+/* ── HISTORY ── */
+function saveToHistory(){
+  let totalJ=0,doneJ=0,skippedJ=0;
+  const dayBreakdown=[];
+  [1,2,3].forEach(d=>{
+    const slots=SCHEDULE[d-1].slots; let dd=0,sk=0;
+    slots.forEach((_,i)=>{ totalJ++; const v=(state.checks[d]||{})[i];
+      if(v==='done'){doneJ++;dd++;} if(v==='skipped'){skippedJ++;sk++;}
+    });
+    dayBreakdown.push({done:dd,skipped:sk,total:slots.length});
+  });
+  const entry={
+    date: new Date().toLocaleDateString([],{year:'numeric',month:'short',day:'numeric'}),
+    juicesDone:doneJ, juicesTotal:totalJ, skipped:skippedJ,
+    days:dayBreakdown, why:state.why,
+    cravings:state.cravings.length
+  };
+  state.history.unshift(entry);
   saveState(state);
-  renderCravingLog();
+  alert('Cleanse saved to history!');
+  renderHistory();
 }
 
-function saveWhy() {
-  const v = document.getElementById('why-input').value.trim();
-  if (!v) return;
-  state.why = v;
-  saveState(state);
-  document.getElementById('why-display').textContent = v;
-}
-
-function resetAll() {
-  if (!confirm('Reset all progress? This cannot be undone.')) return;
-  state = {checks:{},why:'',cravings:[],activeDay:1};
-  saveState(state);
-  renderAll();
-}
-
-function setManualTimer() {
-  const timeInput = document.getElementById('next-juice-time').value;
-  const juiceName = document.getElementById('next-juice-select').value;
-  if (!timeInput) return;
-  const [h, m] = timeInput.split(':').map(Number);
-  const now = new Date();
-  const target = new Date(now);
-  target.setHours(h, m, 0, 0);
-  if (target <= now) target.setDate(target.getDate()+1);
-  targetTime = target;
-  nextJuiceName = juiceName;
-  if (timerInterval) clearInterval(timerInterval);
-  timerInterval = setInterval(updateTimer, 1000);
-  updateTimer();
-  const allSlots = [].concat(...SCHEDULE.map(d=>d.slots));
-  const slot = allSlots.find(s=>s.juice===juiceName);
-  document.getElementById('timer-next-name').textContent = juiceName;
-  document.getElementById('timer-next-ingr').textContent = slot ? slot.ingr : '';
-}
-
-function updateTimer() {
-  if (!targetTime) return;
-  const diff = targetTime - new Date();
-  if (diff <= 0) {
-    document.getElementById('timer-display').textContent = "Time!";
-    document.getElementById('timer-label').textContent = "Your juice is ready";
-    clearInterval(timerInterval);
+function renderHistory(){
+  const list=document.getElementById('history-list');
+  if(!state.history.length){
+    list.innerHTML=`<div style="font-size:13px;color:var(--text-tertiary);padding:8px 0;">No cleanses saved yet. Complete a cleanse and hit "Save cleanse to history" in the Stats tab.</div>`;
     return;
   }
-  const h = Math.floor(diff/3600000);
-  const m = Math.floor((diff%3600000)/60000);
-  const s = Math.floor((diff%60000)/1000);
-  document.getElementById('timer-display').textContent =
-    String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-  document.getElementById('timer-label').textContent = `until ${nextJuiceName}`;
+  list.innerHTML=state.history.map((e,ei)=>{
+    const pct=Math.round((e.juicesDone/e.juicesTotal)*100);
+    const bars=e.days.map((d,i)=>{
+      const dp=Math.round((d.done/d.total)*100);
+      const c=dp===100?'#639922':dp>50?'#BA7517':'#E24B4A';
+      return `<div class="history-bar-row"><span style="min-width:38px;">Day ${i+1}</span><div class="history-bar-track"><div class="history-bar-fill" style="width:${dp}%;background:${c};"></div></div><span style="min-width:36px;text-align:right;">${d.done}/${d.total}</span></div>`;
+    }).join('');
+    return `<div class="history-entry">
+      <div class="history-date">${e.date}</div>
+      <div class="history-title">${pct}% completion · ${e.juicesDone}/${e.juicesTotal} juices done · ${e.skipped} skipped</div>
+      <div class="history-bars">${bars}</div>
+      ${e.why?`<div class="history-note">"${e.why}"</div>`:''}
+      <div style="margin-top:8px;"><button class="reset-link" onclick="deleteHistory(${ei})">Delete entry</button></div>
+    </div>`;
+  }).join('');
 }
 
-function showTab(tab) {
-  ['tracker','timer','dashboard'].forEach(t => {
-    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
-  });
-  document.querySelectorAll('.tab').forEach((btn,i) => {
-    btn.classList.toggle('active', ['tracker','timer','dashboard'][i]===tab);
-  });
+function deleteHistory(idx){
+  if(!confirm('Delete this history entry?')) return;
+  state.history.splice(idx,1); saveState(state); renderHistory();
 }
+
+/* ── REINTRO ── */
+function renderReintro(){
+  document.getElementById('reintr-grid').innerHTML=REINTRO.map(r=>`
+    <div class="reintr-card">
+      <div class="reintr-day">${r.day}</div>
+      <div class="reintr-title" style="color:${r.color}">${r.title}</div>
+      <div class="reintr-foods">${r.foods.map(f=>`<div>· ${f}</div>`).join('')}</div>
+      ${r.warn?`<div class="reintr-warn">${r.warn}</div>`:''}
+    </div>`).join('');
+}
+
+/* ── TIMER ── */
+function setManualTimer(){
+  const timeInput=document.getElementById('next-juice-time').value;
+  const juiceName=document.getElementById('next-juice-select').value;
+  if(!timeInput)return;
+  const [h,m]=timeInput.split(':').map(Number);
+  const now=new Date(), target=new Date(now);
+  target.setHours(h,m,0,0);
+  if(target<=now) target.setDate(target.getDate()+1);
+  targetTime=target; nextJuiceName=juiceName;
+  if(timerInterval)clearInterval(timerInterval);
+  timerInterval=setInterval(updateTimer,1000); updateTimer();
+  const slot=[].concat(...SCHEDULE.map(d=>d.slots)).find(s=>s.juice===juiceName);
+  document.getElementById('timer-next-name').textContent=juiceName;
+  document.getElementById('timer-next-ingr').textContent=slot?slot.ingr:'';
+}
+function updateTimer(){
+  if(!targetTime)return;
+  const diff=targetTime-new Date();
+  if(diff<=0){ document.getElementById('timer-display').textContent="Time!"; document.getElementById('timer-label').textContent="Your juice is ready"; clearInterval(timerInterval); return; }
+  const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+  document.getElementById('timer-display').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  document.getElementById('timer-label').textContent=`until ${nextJuiceName}`;
+}
+
+/* ── RESET ── */
+function resetAll(){
+  if(!confirm('Reset all progress? This cannot be undone.')) return;
+  state={checks:{},why:'',cravings:[],activeDay:1,liveDay:1,prepDay:0,prepChecks:{},history:state.history||[],prepDismissed:false};
+  saveState(state); renderAll();
+}
+
+/* ── INIT ── */
+function renderAll(){
+  renderDaySelector(); renderTracker();
+  renderLiveDaySelector();
+  renderDashboard(); renderCravingLog();
+  renderPrep();
+  document.getElementById('why-display').textContent=state.why||'Write your reason below — read this when cravings hit.';
+  if(state.why) document.getElementById('why-input').value=state.why;
+  document.getElementById('tip-box').innerHTML='<i class="ti ti-bulb" style="font-size:15px;vertical-align:-2px;margin-right:6px;" aria-hidden="true"></i>'+TIPS[Math.floor(Math.random()*TIPS.length)];
+  checkPrepBanner();
+}
+
+// Auto-refresh live schedule every 60s
+liveInterval=setInterval(()=>{ if(document.getElementById('tab-live').classList.contains('active')) renderLiveSchedule(); }, 60000);
 
 renderAll();
 </script>
