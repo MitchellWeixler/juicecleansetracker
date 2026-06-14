@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>3-Day Juice Cleanse Tracker</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f2;
+    --bg-tertiary: #eeede8;
+    --text-primary: #1a1a18;
+    --text-secondary: #6b6b66;
+    --text-tertiary: #a0a09a;
+    --border-tertiary: rgba(0,0,0,0.12);
+    --border-secondary: rgba(0,0,0,0.22);
+    --border-primary: rgba(0,0,0,0.35);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #1e1e1c;
+      --bg-secondary: #2a2a27;
+      --bg-tertiary: #111110;
+      --text-primary: #f0efea;
+      --text-secondary: #a8a8a0;
+      --text-tertiary: #6b6b63;
+      --border-tertiary: rgba(255,255,255,0.10);
+      --border-secondary: rgba(255,255,255,0.18);
+      --border-primary: rgba(255,255,255,0.28);
+    }
+    .b-green { background: #1c3010 !important; color: #8ecf4a !important; }
+    .b-amber { background: #2e1d06 !important; color: #f5b942 !important; }
+    .b-pink  { background: #2a0f1a !important; color: #e888a8 !important; }
+    .b-blue  { background: #051e38 !important; color: #6eaeed !important; }
+    .b-gray  { background: #222220 !important; color: #aaa9a2 !important; }
+    .check-btn.done    { background: #1c3010 !important; border-color: #639922 !important; color: #8ecf4a !important; }
+    .check-btn.skipped { background: #2a0808 !important; border-color: #e24b4a !important; color: #f08080 !important; }
+    .streak-dot.complete { background: #1c3010 !important; border-color: #639922 !important; color: #8ecf4a !important; }
+    .streak-dot.partial  { background: #2e1d06 !important; border-color: #BA7517 !important; color: #f5b942 !important; }
+    input, select, textarea { background: #2a2a27 !important; color: #f0efea !important; border-color: rgba(255,255,255,0.18) !important; }
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  header {
+    background: var(--bg-primary);
+    border-bottom: 0.5px solid var(--border-tertiary);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  header .logo { font-size: 20px; color: #639922; }
+  header h1 { font-size: 16px; font-weight: 500; color: var(--text-primary); }
+  header .sub { font-size: 12px; color: var(--text-secondary); margin-left: auto; }
+
+  .container { max-width: 680px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab {
+    padding: 7px 18px; border-radius: var(--radius-md);
+    border: 0.5px solid var(--border-secondary);
+    font-size: 14px; cursor: pointer;
+    background: transparent; color: var(--text-secondary);
+    transition: all 0.15s; font-family: var(--font-sans);
+  }
+  .tab.active {
+    background: var(--bg-secondary); color: var(--text-primary);
+    border-color: var(--border-primary); font-weight: 500;
+  }
+  .tab i { font-size: 15px; vertical-align: -2px; margin-right: 5px; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .card {
+    background: var(--bg-primary);
+    border: 0.5px solid var(--border-tertiary);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 12px;
+  }
+
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .metric { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 12px 14px; }
+  .metric-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+  .metric-val { font-size: 22px; font-weight: 500; color: var(--text-primary); }
+
+  .progress-bar-track { height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; margin: 8px 0; }
+  .progress-bar-fill { height: 8px; border-radius: 4px; transition: width 0.4s; }
+
+  .juice-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid var(--border-tertiary); }
+  .juice-row:last-child { border-bottom: none; }
+
+  .check-btn {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 0.5px solid var(--border-secondary);
+    background: transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.15s;
+    color: var(--text-tertiary); font-size: 15px;
+  }
+  .check-btn.done    { background: #EAF3DE; border-color: #639922; color: #3B6D11; }
+  .check-btn.skipped { background: #FCEBEB; border-color: #E24B4A; color: #A32D2D; }
+
+  .juice-info { flex: 1; min-width: 0; }
+  .juice-name { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .juice-name.done { text-decoration: line-through; color: var(--text-tertiary); }
+  .juice-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+  .badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 99px; margin-right: 4px; white-space: nowrap; }
+  .b-green { background: #EAF3DE; color: #3B6D11; }
+  .b-amber { background: #FAEEDA; color: #854F0B; }
+  .b-pink  { background: #FBEAF0; color: #72243E; }
+  .b-blue  { background: #E6F1FB; color: #0C447C; }
+  .b-gray  { background: #F1EFE8; color: #5F5E5A; }
+
+  .oz-badge { font-size: 11px; color: var(--text-secondary); background: var(--bg-secondary); border-radius: 99px; padding: 2px 7px; white-space: nowrap; flex-shrink: 0; }
+  .skip-btn { font-size: 11px; color: var(--text-tertiary); background: transparent; border: none; cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+  .skip-btn:hover { color: var(--text-secondary); }
+
+  .section-title { font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 10px; }
+
+  .day-selector { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .day-btn { padding: 5px 14px; border-radius: var(--radius-md); border: 0.5px solid var(--border-secondary); font-size: 13px; cursor: pointer; background: transparent; color: var(--text-secondary); font-family: var(--font-sans); }
+  .day-btn.active { background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-primary); font-weight: 500; }
+
+  .timer-box { text-align: center; padding: 2rem 1rem; }
+  .timer-big { font-size: 52px; font-weight: 500; color: var(--text-primary); font-variant-numeric: tabular-nums; letter-spacing: 2px; }
+  .timer-label { font-size: 13px; color: var(--text-secondary); margin-top: 6px; }
+  .timer-next { font-size: 15px; font-weight: 500; color: var(--text-primary); margin-top: 14px; }
+  .timer-ingr { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+  .motivation-input {
+    width: 100%; border: 0.5px solid var(--border-secondary);
+    border-radius: var(--radius-md); padding: 8px 10px;
+    font-size: 13px; background: transparent; color: var(--text-primary);
+    resize: none; min-height: 60px; font-family: var(--font-sans);
+  }
+  .motivation-q { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+
+  .action-btn {
+    margin-top: 8px; padding: 7px 16px;
+    border-radius: var(--radius-md); border: 0.5px solid var(--border-secondary);
+    background: transparent; color: var(--text-primary);
+    font-size: 13px; cursor: pointer; font-family: var(--font-sans);
+  }
+  .action-btn:hover { background: var(--bg-secondary); }
+
+  .why-display {
+    font-size: 14px; color: var(--text-primary);
+    padding: 10px; background: var(--bg-secondary);
+    border-radius: var(--radius-md); margin-bottom: 12px;
+    min-height: 44px; font-style: italic;
+  }
+
+  .streak-row { display: flex; gap: 6px; margin: 8px 0; }
+  .streak-dot {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500;
+    border: 0.5px solid var(--border-tertiary);
+    color: var(--text-secondary);
+  }
+  .streak-dot.complete { background: #EAF3DE; border-color: #639922; color: #3B6D11; }
+  .streak-dot.partial  { background: #FAEEDA; border-color: #BA7517; color: #854F0B; }
+  .streak-dot.today    { background: var(--bg-secondary); border-color: var(--border-primary); color: var(--text-primary); font-weight: 500; }
+
+  .tip-box { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 10px 14px; font-size: 13px; color: var(--text-secondary); margin-top: 12px; }
+  .tip-box i { font-size: 15px; vertical-align: -2px; margin-right: 6px; }
+
+  input[type="time"], select {
+    padding: 7px 10px; border-radius: var(--radius-md);
+    border: 0.5px solid var(--border-secondary);
+    background: var(--bg-primary); color: var(--text-primary);
+    font-size: 13px; font-family: var(--font-sans);
+  }
+
+  .legend { display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
+  .legend-item { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+
+  .reset-link { font-size: 12px; color: var(--text-tertiary); text-decoration: underline; cursor: pointer; background: none; border: none; font-family: var(--font-sans); margin-top: 8px; display: inline-block; }
+
+  footer { text-align: center; font-size: 12px; color: var(--text-tertiary); padding: 24px 0 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo"><i class="ti ti-leaf" aria-hidden="true"></i></span>
+  <h1>Juice Cleanse Tracker</h1>
+  <span class="sub">3-day program</span>
+</header>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('tracker')"><i class="ti ti-checkbox" aria-hidden="true"></i>Today</button>
+    <button class="tab" onclick="showTab('timer')"><i class="ti ti-clock" aria-hidden="true"></i>Timer</button>
+    <button class="tab" onclick="showTab('dashboard')"><i class="ti ti-chart-bar" aria-hidden="true"></i>Dashboard</button>
+  </div>
+
+  <!-- TRACKER -->
+  <div id="tab-tracker" class="panel active">
+    <div class="day-selector" id="day-selector"></div>
+    <div id="tracker-content"></div>
+  </div>
+
+  <!-- TIMER -->
+  <div id="tab-timer" class="panel">
+    <div class="card timer-box">
+      <div class="timer-big" id="timer-display">--:--:--</div>
+      <div class="timer-label" id="timer-label">set a juice time below</div>
+      <div class="timer-next" id="timer-next-name"></div>
+      <div class="timer-ingr" id="timer-next-ingr"></div>
+    </div>
+    <div class="card">
+      <div class="section-title">Set your next juice</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <input type="time" id="next-juice-time" />
+        <select id="next-juice-select" style="flex:1;min-width:160px;">
+          <option>Warm lemon water</option>
+          <option>Sunrise Immunity</option>
+          <option>Green Detox</option>
+          <option>Golden Glow</option>
+          <option>Watermelon Refresh</option>
+          <option>Warm herbal tea</option>
+        </select>
+        <button class="action-btn" onclick="setManualTimer()"><i class="ti ti-player-play" style="font-size:14px;vertical-align:-2px;" aria-hidden="true"></i> Start</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="tab-dashboard" class="panel">
+    <div class="metric-grid" id="metric-grid"></div>
+    <div class="card">
+      <div class="section-title">Day-by-day progress</div>
+      <div class="streak-row" id="streak-row"></div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#EAF3DE;border:0.5px solid #639922;"></span>Complete</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#FAEEDA;border:0.5px solid #BA7517;"></span>Partial</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--bg-secondary);border:0.5px solid var(--border-primary);"></span>Today</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">Why I'm doing this cleanse</div>
+      <div class="why-display" id="why-display">Write your reason below — read this when cravings hit.</div>
+      <div class="motivation-q">Your personal reason stays here between sessions.</div>
+      <textarea class="motivation-input" id="why-input" placeholder="e.g. I want to feel lighter, reset my eating habits, and prove to myself I can do this..."></textarea>
+      <button class="action-btn" onclick="saveWhy()"><i class="ti ti-device-floppy" style="font-size:14px;vertical-align:-2px;" aria-hidden="true"></i> Save</button>
+    </div>
+    <div class="card">
+      <div class="section-title">Craving log</div>
+      <div id="craving-log-list" style="margin-bottom:10px;max-height:180px;overflow-y:auto;"></div>
+      <textarea class="motivation-input" id="craving-input" placeholder="Log a craving or moment of temptation..." style="min-height:48px;"></textarea>
+      <button class="action-btn" onclick="logCraving()"><i class="ti ti-plus" style="font-size:14px;vertical-align:-2px;" aria-hidden="true"></i> Log it</button>
+    </div>
+    <div class="tip-box" id="tip-box"></div>
+    <div style="text-align:center;margin-top:16px;">
+      <button class="reset-link" onclick="resetAll()">Reset all progress</button>
+    </div>
+  </div>
+
+  <footer>Your progress is saved locally in your browser.</footer>
+</div>
+
+<script>
+const SCHEDULE = [
+  {day:1,label:"reset & ease in",slots:[
+    {time:"8:00 AM",juice:"Warm lemon water",oz:10,badge:"b-blue",ingr:""},
+    {time:"9:00 AM",juice:"Sunrise Immunity",oz:16,badge:"b-amber",ingr:"Orange · Carrot · Lemon · Turmeric · Pineapple"},
+    {time:"11:30 AM",juice:"Green Detox",oz:16,badge:"b-green",ingr:"Kale · Cucumber · Celery · Lemon · Ginger · Apple"},
+    {time:"2:00 PM",juice:"Sunrise Immunity",oz:16,badge:"b-amber",ingr:"Orange · Carrot · Lemon · Turmeric · Pineapple"},
+    {time:"4:30 PM",juice:"Watermelon Refresh",oz:14,badge:"b-pink",ingr:"Watermelon · Cucumber · Lemon"},
+    {time:"7:00 PM",juice:"Green Detox",oz:16,badge:"b-green",ingr:"Kale · Cucumber · Celery · Lemon · Ginger · Apple"},
+    {time:"9:30 PM",juice:"Warm herbal tea",oz:8,badge:"b-gray",ingr:""}
+  ]},
+  {day:2,label:"the deep cleanse",slots:[
+    {time:"8:00 AM",juice:"Warm lemon water",oz:10,badge:"b-blue",ingr:""},
+    {time:"9:00 AM",juice:"Green Detox",oz:16,badge:"b-green",ingr:"Kale · Cucumber · Celery · Lemon · Ginger · Apple"},
+    {time:"11:30 AM",juice:"Sunrise Immunity",oz:16,badge:"b-amber",ingr:"Orange · Carrot · Lemon · Turmeric · Pineapple"},
+    {time:"2:00 PM",juice:"Watermelon Refresh",oz:14,badge:"b-pink",ingr:"Watermelon · Cucumber · Lemon"},
+    {time:"4:30 PM",juice:"Green Detox",oz:16,badge:"b-green",ingr:"Kale · Cucumber · Celery · Lemon · Ginger · Apple"},
+    {time:"7:00 PM",juice:"Sunrise Immunity",oz:16,badge:"b-amber",ingr:"Orange · Carrot · Lemon · Turmeric · Pineapple"},
+    {time:"9:30 PM",juice:"Warm herbal tea",oz:8,badge:"b-gray",ingr:""}
+  ]},
+  {day:3,label:"restore & glow",slots:[
+    {time:"8:00 AM",juice:"Warm lemon water",oz:10,badge:"b-blue",ingr:""},
+    {time:"9:00 AM",juice:"Golden Glow",oz:16,badge:"b-amber",ingr:"Carrots · Turmeric · Ginger · Orange · Pineapple"},
+    {time:"11:30 AM",juice:"Green Detox",oz:16,badge:"b-green",ingr:"Kale · Cucumber · Celery · Lemon · Ginger · Apple"},
+    {time:"2:00 PM",juice:"Golden Glow",oz:16,badge:"b-amber",ingr:"Carrots · Turmeric · Ginger · Orange · Pineapple"},
+    {time:"4:30 PM",juice:"Watermelon Refresh",oz:14,badge:"b-pink",ingr:"Watermelon · Cucumber · Lemon"},
+    {time:"7:00 PM",juice:"Golden Glow",oz:16,badge:"b-amber",ingr:"Carrots · Turmeric · Ginger · Orange · Pineapple"},
+    {time:"9:30 PM",juice:"Warm herbal tea",oz:8,badge:"b-gray",ingr:""}
+  ]}
+];
+
+const TIPS = [
+  "Craving solid food? Chew on cucumber slices — it satisfies the urge without breaking the cleanse.",
+  "Headachy on Day 2? That's usually caffeine withdrawal. Drink extra water and rest.",
+  "Fill every juice jar to the absolute brim before storing — less air contact means fresher juice.",
+  "Feeling low energy? A short 10-minute walk boosts circulation without draining your reserves.",
+  "Tell someone you trust about your cleanse — accountability makes a real difference.",
+  "If a juice tastes off, squeeze more lemon in. Lemon fixes almost everything.",
+  "Remember: Day 3 feels noticeably better than Day 2 for almost everyone. Keep going."
+];
+
+const BADGE_LABELS = {'b-green':'green detox','b-amber':'energizing','b-pink':'hydrating','b-blue':'ritual','b-gray':'wind down'};
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem('juice-cleanse-state') || '{}'); } catch(e) { return {}; }
+}
+function saveState(s) {
+  try { localStorage.setItem('juice-cleanse-state', JSON.stringify(s)); } catch(e) {}
+}
+
+let state = loadState();
+if (!state.checks) state.checks = {};
+if (!state.why) state.why = '';
+if (!state.cravings) state.cravings = [];
+if (!state.activeDay) state.activeDay = 1;
+
+let timerInterval = null;
+let targetTime = null;
+let nextJuiceName = '';
+
+function renderAll() {
+  renderDaySelector();
+  renderTracker();
+  renderDashboard();
+  renderCravingLog();
+  document.getElementById('why-display').textContent = state.why || 'Write your reason below — read this when cravings hit.';
+  if (state.why) document.getElementById('why-input').value = state.why;
+  document.getElementById('tip-box').innerHTML = '<i class="ti ti-bulb" aria-hidden="true"></i> ' + TIPS[Math.floor(Math.random() * TIPS.length)];
+}
+
+function renderDaySelector() {
+  document.getElementById('day-selector').innerHTML = [1,2,3].map(d =>
+    `<button class="day-btn${state.activeDay===d?' active':''}" onclick="setDay(${d})">Day ${d}</button>`
+  ).join('');
+}
+
+function setDay(d) {
+  state.activeDay = d;
+  saveState(state);
+  renderDaySelector();
+  renderTracker();
+}
+
+function renderTracker() {
+  const d = state.activeDay;
+  const dayData = SCHEDULE[d-1];
+  const checks = state.checks[d] || {};
+  const total = dayData.slots.length;
+  const done = Object.values(checks).filter(v=>v==='done').length;
+  const pct = Math.round((done/total)*100);
+  const barColor = pct===100?'#639922':pct>50?'#BA7517':'#378ADD';
+
+  let html = `<div class="card">
+    <div class="section-title" style="margin-bottom:8px;">Day ${d} — ${dayData.label}</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <div style="flex:1;"><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${pct}%;background:${barColor};"></div></div></div>
+      <span style="font-size:13px;font-weight:500;color:var(--text-primary);min-width:36px;">${done}/${total}</span>
+    </div>
+    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">${pct}% complete today</div>`;
+
+  dayData.slots.forEach((s, i) => {
+    const status = checks[i] || 'pending';
+    const iconClass = status==='done'?'ti-check':status==='skipped'?'ti-x':'ti-circle';
+    html += `<div class="juice-row">
+      <button class="check-btn${status==='done'?' done':status==='skipped'?' skipped':''}" onclick="toggleCheck(${d},${i})" aria-label="${s.juice}">
+        <i class="ti ${iconClass}" aria-hidden="true"></i>
+      </button>
+      <div class="juice-info">
+        <div class="juice-name${status==='done'?' done':''}">${s.juice} <span style="font-size:11px;font-weight:400;color:var(--text-tertiary);">${s.time}</span></div>
+        <div class="juice-meta">
+          <span class="badge ${s.badge}">${BADGE_LABELS[s.badge]||''}</span>
+          ${s.ingr?`<span style="font-size:11px;color:var(--text-tertiary);">${s.ingr}</span>`:''}
+        </div>
+      </div>
+      <span class="oz-badge">${s.oz} oz</span>
+      ${status==='pending'?`<button class="skip-btn" onclick="skipCheck(${d},${i})" title="Skip"><i class="ti ti-player-skip-forward" style="font-size:13px;" aria-hidden="true"></i></button>`:''}
+    </div>`;
+  });
+  html += `</div>`;
+  document.getElementById('tracker-content').innerHTML = html;
+}
+
+function toggleCheck(day, idx) {
+  if (!state.checks[day]) state.checks[day] = {};
+  const cur = state.checks[day][idx] || 'pending';
+  state.checks[day][idx] = cur==='done' ? 'pending' : 'done';
+  saveState(state);
+  renderTracker();
+  renderDashboard();
+}
+
+function skipCheck(day, idx) {
+  if (!state.checks[day]) state.checks[day] = {};
+  state.checks[day][idx] = 'skipped';
+  saveState(state);
+  renderTracker();
+  renderDashboard();
+}
+
+function renderDashboard() {
+  let totalJ=0, doneJ=0, skippedJ=0;
+  [1,2,3].forEach(d => {
+    SCHEDULE[d-1].slots.forEach((_,i) => {
+      totalJ++;
+      const v=(state.checks[d]||{})[i];
+      if(v==='done') doneJ++;
+      if(v==='skipped') skippedJ++;
+    });
+  });
+  const pct = Math.round((doneJ/totalJ)*100);
+  const completedDays = [1,2,3].filter(d => SCHEDULE[d-1].slots.every((_,i)=>(state.checks[d]||{})[i]==='done')).length;
+
+  document.getElementById('metric-grid').innerHTML = `
+    <div class="metric"><div class="metric-label">Overall progress</div><div class="metric-val">${pct}%</div><div class="progress-bar-track"><div class="progress-bar-fill" style="width:${pct}%;background:#639922;"></div></div></div>
+    <div class="metric"><div class="metric-label">Juices done</div><div class="metric-val">${doneJ}<span style="font-size:14px;color:var(--text-secondary);">/${totalJ}</span></div></div>
+    <div class="metric"><div class="metric-label">Days complete</div><div class="metric-val">${completedDays}<span style="font-size:14px;color:var(--text-secondary);">/3</span></div></div>
+    <div class="metric"><div class="metric-label">Skipped</div><div class="metric-val" style="color:${skippedJ>0?'#BA7517':'var(--text-primary)'};">${skippedJ}</div></div>
+  `;
+
+  document.getElementById('streak-row').innerHTML = [1,2,3].map(d => {
+    const checks = state.checks[d]||{};
+    const total = SCHEDULE[d-1].slots.length;
+    const done = Object.values(checks).filter(v=>v==='done').length;
+    const isToday = d===state.activeDay;
+    const cls = done===total?'complete':done>0?'partial':isToday?'today':'';
+    return `<div class="streak-dot ${cls}" title="Day ${d}: ${done}/${total}">D${d}</div>`;
+  }).join('');
+}
+
+function renderCravingLog() {
+  const list = document.getElementById('craving-log-list');
+  if (!state.cravings.length) {
+    list.innerHTML = `<div style="font-size:12px;color:var(--text-tertiary);padding:4px 0;">No cravings logged yet — you're crushing it.</div>`;
+    return;
+  }
+  list.innerHTML = state.cravings.slice(-8).reverse().map(c =>
+    `<div style="font-size:12px;color:var(--text-secondary);padding:6px 0;border-bottom:0.5px solid var(--border-tertiary);">
+      <span style="color:var(--text-tertiary);margin-right:6px;">${c.time}</span>${c.text}
+    </div>`
+  ).join('');
+}
+
+function logCraving() {
+  const inp = document.getElementById('craving-input');
+  const txt = inp.value.trim();
+  if (!txt) return;
+  const now = new Date();
+  const time = `Day ${state.activeDay} ${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
+  state.cravings.push({time, text: txt});
+  inp.value = '';
+  saveState(state);
+  renderCravingLog();
+}
+
+function saveWhy() {
+  const v = document.getElementById('why-input').value.trim();
+  if (!v) return;
+  state.why = v;
+  saveState(state);
+  document.getElementById('why-display').textContent = v;
+}
+
+function resetAll() {
+  if (!confirm('Reset all progress? This cannot be undone.')) return;
+  state = {checks:{},why:'',cravings:[],activeDay:1};
+  saveState(state);
+  renderAll();
+}
+
+function setManualTimer() {
+  const timeInput = document.getElementById('next-juice-time').value;
+  const juiceName = document.getElementById('next-juice-select').value;
+  if (!timeInput) return;
+  const [h, m] = timeInput.split(':').map(Number);
+  const now = new Date();
+  const target = new Date(now);
+  target.setHours(h, m, 0, 0);
+  if (target <= now) target.setDate(target.getDate()+1);
+  targetTime = target;
+  nextJuiceName = juiceName;
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(updateTimer, 1000);
+  updateTimer();
+  const allSlots = [].concat(...SCHEDULE.map(d=>d.slots));
+  const slot = allSlots.find(s=>s.juice===juiceName);
+  document.getElementById('timer-next-name').textContent = juiceName;
+  document.getElementById('timer-next-ingr').textContent = slot ? slot.ingr : '';
+}
+
+function updateTimer() {
+  if (!targetTime) return;
+  const diff = targetTime - new Date();
+  if (diff <= 0) {
+    document.getElementById('timer-display').textContent = "Time!";
+    document.getElementById('timer-label').textContent = "Your juice is ready";
+    clearInterval(timerInterval);
+    return;
+  }
+  const h = Math.floor(diff/3600000);
+  const m = Math.floor((diff%3600000)/60000);
+  const s = Math.floor((diff%60000)/1000);
+  document.getElementById('timer-display').textContent =
+    String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  document.getElementById('timer-label').textContent = `until ${nextJuiceName}`;
+}
+
+function showTab(tab) {
+  ['tracker','timer','dashboard'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+  });
+  document.querySelectorAll('.tab').forEach((btn,i) => {
+    btn.classList.toggle('active', ['tracker','timer','dashboard'][i]===tab);
+  });
+}
+
+renderAll();
+</script>
+</body>
+</html>
