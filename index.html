@@ -348,6 +348,34 @@
   .history-bar-fill  { height: 5px; border-radius: 99px; }
   .history-note  { font-size: 11px; color: var(--text-muted); margin-top: 8px; font-style: italic; border-top: 1px solid var(--border-soft); padding-top: 8px; line-height: 1.5; }
 
+  /* ── RECIPE TOGGLE ── */
+  .recipe-toggle {
+    display: inline-flex;
+    background: var(--bg-inset);
+    border-radius: 99px;
+    padding: 2px;
+    gap: 0;
+    margin-bottom: 10px;
+  }
+  .recipe-toggle-btn {
+    padding: 4px 12px;
+    border-radius: 99px;
+    border: none;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    background: transparent;
+    color: var(--text-muted);
+    transition: all 0.18s ease;
+    letter-spacing: 0.2px;
+  }
+  .recipe-toggle-btn.active {
+    background: var(--bg-card);
+    color: var(--brand-dark);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+  }
+
   /* ── ACCORDION ── */
   .sec-header {
     display: flex; align-items: center; justify-content: space-between;
@@ -729,6 +757,7 @@ if(!state.prepChecks)state.prepChecks={};
 if(!state.history)  state.history  = [];
 if(!state.prepDismissed)state.prepDismissed=false;
 if(!state.openAccordions)state.openAccordions={};
+if(!state.recipeMode)state.recipeMode='serving'; // 'serving' | 'batch'
 
 let timerInterval=null, liveInterval=null, targetTime=null, nextJuiceName='';
 
@@ -921,18 +950,34 @@ function renderPrep(){
 
     // Recipe card (juice sections only)
     if(sec.recipe){
+      const isBatch = state.recipeMode === 'batch';
+      const mult = isBatch ? sec.servings : 1;
+      const modeLabel = isBatch ? `${sec.servings} servings · ${sec.totalOz} oz` : 'per 16 oz serving';
+
       let grid='';
       sec.recipe.ingredients.forEach(ing=>{
-        grid+=`<div style="font-size:12px;font-weight:500;color:${sec.color};white-space:nowrap;">${ing.amount}</div>
+        // Parse the amount to scale it
+        const scaledAmount = scaleAmount(ing.amount, mult);
+        grid+=`<div style="font-size:12px;font-weight:600;color:${sec.color};white-space:nowrap;">${scaledAmount}</div>
                <div style="font-size:12px;color:var(--text-primary);">${ing.item}</div>`;
       });
+
+      const servingActive = !isBatch ? 'active' : '';
+      const batchActive   =  isBatch ? 'active' : '';
+
       html+=`<div class="recipe-card">
-        <div style="font-size:11px;font-weight:500;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Ingredients — per serving</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Ingredients — ${modeLabel}</div>
+          <div class="recipe-toggle">
+            <button class="recipe-toggle-btn ${servingActive}" onclick="event.stopPropagation();toggleRecipeMode('serving')">Per serving</button>
+            <button class="recipe-toggle-btn ${batchActive}"   onclick="event.stopPropagation();toggleRecipeMode('batch')">Full batch</button>
+          </div>
+        </div>
         <div style="display:grid;grid-template-columns:auto 1fr;gap:3px 12px;margin-bottom:10px;">${grid}</div>
-        <div style="font-size:11px;color:var(--text-secondary);border-top:0.5px solid var(--border-tertiary);padding-top:8px;">
+        <div style="font-size:11px;color:var(--text-secondary);border-top:1px solid var(--border-soft);padding-top:8px;">
           <i class="ti ti-bulb" style="font-size:12px;vertical-align:-1px;margin-right:4px;" aria-hidden="true"></i><strong>Tip:</strong> ${sec.recipe.tip}
         </div>
-        ${sec.recipe.note?`<div style="font-size:11px;color:var(--text-tertiary);margin-top:6px;"><i class="ti ti-info-circle" style="font-size:12px;vertical-align:-1px;margin-right:4px;" aria-hidden="true"></i>${sec.recipe.note}</div>`:''}
+        ${sec.recipe.note?`<div style="font-size:11px;color:var(--text-muted);margin-top:6px;"><i class="ti ti-info-circle" style="font-size:12px;vertical-align:-1px;margin-right:4px;" aria-hidden="true"></i>${sec.recipe.note}</div>`:''}
       </div>`;
     }
 
@@ -958,7 +1003,49 @@ function renderPrep(){
   document.getElementById('prep-list').innerHTML=html;
 }
 
-function togglePrep(key){
+function scaleAmount(amountStr, mult){
+  if(mult === 1) return amountStr;
+  // Try to find a leading number (int, decimal, or fraction like ½ ¼ ¾ ⅓ ⅔)
+  const fractions = {'½':0.5,'¼':0.25,'¾':0.75,'⅓':0.333,'⅔':0.667,'⅛':0.125};
+  let str = amountStr.trim();
+
+  // Replace unicode fractions with decimals for parsing
+  let normalized = str;
+  Object.entries(fractions).forEach(([sym, val])=>{ normalized = normalized.replace(sym, val); });
+
+  // Match leading number (e.g. "2", "1.5", "0.5", "1-inch", "2 cups")
+  const match = normalized.match(/^(\d+\.?\d*)/);
+  if(match){
+    const num = parseFloat(match[1]);
+    const scaled = num * mult;
+    const rest = str.slice(match[0].length); // keep original suffix
+    // Format nicely: no unnecessary decimals
+    const fmt = scaled % 1 === 0 ? scaled.toString() : scaled.toFixed(1).replace(/\.0$/,'');
+    return fmt + rest;
+  }
+
+  // If starts with a fraction symbol alone (e.g. "½ medium")
+  for(const [sym, val] of Object.entries(fractions)){
+    if(str.startsWith(sym)){
+      const scaled = val * mult;
+      const rest = str.slice(sym.length);
+      const fmt = scaled % 1 === 0 ? scaled.toString() : scaled.toFixed(1).replace(/\.0$/,'');
+      return fmt + rest;
+    }
+  }
+
+  // Fallback — return as-is with ×N note
+  return `${str} ×${mult}`;
+}
+
+function toggleRecipeMode(mode){
+  state.recipeMode = mode;
+  saveState(state);
+  // Re-render just the recipe cards without collapsing accordions
+  renderPrep();
+}
+
+
   state.prepChecks[key]=!state.prepChecks[key];
   saveState(state); renderPrep();
 }
