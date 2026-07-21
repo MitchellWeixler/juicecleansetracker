@@ -620,12 +620,12 @@ const PREP = {
       recipe: {
         note: "Per 16 oz serving. Juice in this order for best yield.",
         ingredients: [
-          {amount:"3–4 large leaves", item:"Kale (stems removed)"},
-          {amount:"½ medium",         item:"Cucumber"},
-          {amount:"3 stalks",         item:"Celery"},
-          {amount:"½",               item:"Lemon, peeled"},
-          {amount:"1-inch knob",      item:"Fresh ginger"},
-          {amount:"½ medium",         item:"Apple (Granny Smith works best)"}
+          {amount:"3–4 large leaves", batch:"12–16 large leaves", item:"Kale (stems removed)"},
+          {amount:"½ medium",         batch:"2 medium",           item:"Cucumber"},
+          {amount:"3 stalks",         batch:"12 stalks",          item:"Celery"},
+          {amount:"½ lemon",          batch:"2 lemons",           item:"Lemon, peeled"},
+          {amount:"1-inch knob",      batch:"4-inch knob",        item:"Fresh ginger"},
+          {amount:"½ medium",         batch:"2 medium",           item:"Apple (Granny Smith works best)"}
         ],
         tip: "Juice the ginger first, then layer greens between harder produce to maximise yield."
       },
@@ -643,11 +643,11 @@ const PREP = {
       recipe: {
         note: "Per 16 oz serving. Push turmeric through with the orange for best extraction.",
         ingredients: [
-          {amount:"2 medium",    item:"Oranges, peeled"},
-          {amount:"2 medium",    item:"Carrots"},
-          {amount:"½",           item:"Lemon, peeled"},
-          {amount:"1-inch knob", item:"Fresh turmeric (or ½ tsp ground)"},
-          {amount:"1 cup",       item:"Fresh pineapple chunks"}
+          {amount:"2 medium",    batch:"8 medium",           item:"Oranges, peeled"},
+          {amount:"2 medium",    batch:"8 medium",           item:"Carrots"},
+          {amount:"½ lemon",     batch:"2 lemons",           item:"Lemon, peeled"},
+          {amount:"1-inch knob", batch:"4-inch knob",        item:"Fresh turmeric (or ½ tsp ground)"},
+          {amount:"1 cup",       batch:"4 cups",             item:"Fresh pineapple chunks"}
         ],
         tip: "Add a tiny pinch of black pepper to each jar — it dramatically increases curcumin absorption."
       },
@@ -665,11 +665,11 @@ const PREP = {
       recipe: {
         note: "Per 16 oz serving. Wear gloves — turmeric stains skin and surfaces.",
         ingredients: [
-          {amount:"3 medium",    item:"Carrots"},
-          {amount:"1½-inch knob",item:"Fresh turmeric (or ¾ tsp ground)"},
-          {amount:"1-inch knob", item:"Fresh ginger"},
-          {amount:"1 medium",    item:"Orange, peeled"},
-          {amount:"¾ cup",       item:"Fresh pineapple chunks"}
+          {amount:"3 medium",       batch:"9 medium",       item:"Carrots"},
+          {amount:"1½-inch knob",   batch:"4½-inch knob",   item:"Fresh turmeric (or ¾ tsp ground)"},
+          {amount:"1-inch knob",    batch:"3-inch knob",    item:"Fresh ginger"},
+          {amount:"1 medium",       batch:"3 medium",       item:"Orange, peeled"},
+          {amount:"¾ cup",          batch:"2¼ cups",        item:"Fresh pineapple chunks"}
         ],
         tip: "Use glass jars only — turmeric permanently stains plastic. Run carrots through last to flush the juicer."
       },
@@ -687,10 +687,10 @@ const PREP = {
       recipe: {
         note: "Per 14 oz serving. Watermelon juices very fast — don't over-fill the juicer.",
         ingredients: [
-          {amount:"2 cups",  item:"Seedless watermelon chunks (rind removed)"},
-          {amount:"¼ medium",item:"Cucumber"},
-          {amount:"¼",       item:"Lemon, peeled"},
-          {amount:"4–5 leaves",item:"Fresh mint (optional but recommended)"}
+          {amount:"2 cups",      batch:"6 cups",        item:"Seedless watermelon chunks (rind removed)"},
+          {amount:"¼ medium",    batch:"¾ medium",      item:"Cucumber"},
+          {amount:"¼ lemon",     batch:"¾ lemon",       item:"Lemon, peeled"},
+          {amount:"4–5 leaves",  batch:"12–15 leaves",  item:"Fresh mint (optional but recommended)"}
         ],
         tip: "This is the most delicate juice. Store at the very back of the fridge (coldest spot) and consume within 48 hours — make a fresh batch on Day 3 if preferred."
       },
@@ -951,14 +951,12 @@ function renderPrep(){
     // Recipe card (juice sections only)
     if(sec.recipe){
       const isBatch = state.recipeMode === 'batch';
-      const mult = isBatch ? sec.servings : 1;
-      const modeLabel = isBatch ? `${sec.servings} servings · ${sec.totalOz} oz` : 'per 16 oz serving';
+      const modeLabel = isBatch ? `full batch — ${sec.servings} servings · ${sec.totalOz} oz` : 'per serving';
 
       let grid='';
       sec.recipe.ingredients.forEach(ing=>{
-        // Parse the amount to scale it
-        const scaledAmount = scaleAmount(ing.amount, mult);
-        grid+=`<div style="font-size:12px;font-weight:600;color:${sec.color};white-space:nowrap;">${scaledAmount}</div>
+        const displayAmount = isBatch ? ing.batch : ing.amount;
+        grid+=`<div style="font-size:12px;font-weight:600;color:${sec.color};white-space:nowrap;">${displayAmount}</div>
                <div style="font-size:12px;color:var(--text-primary);">${ing.item}</div>`;
       });
 
@@ -1001,41 +999,6 @@ function renderPrep(){
     globalIdx+=sec.items.length;
   });
   document.getElementById('prep-list').innerHTML=html;
-}
-
-function scaleAmount(amountStr, mult){
-  if(mult === 1) return amountStr;
-  // Try to find a leading number (int, decimal, or fraction like ½ ¼ ¾ ⅓ ⅔)
-  const fractions = {'½':0.5,'¼':0.25,'¾':0.75,'⅓':0.333,'⅔':0.667,'⅛':0.125};
-  let str = amountStr.trim();
-
-  // Replace unicode fractions with decimals for parsing
-  let normalized = str;
-  Object.entries(fractions).forEach(([sym, val])=>{ normalized = normalized.replace(sym, val); });
-
-  // Match leading number (e.g. "2", "1.5", "0.5", "1-inch", "2 cups")
-  const match = normalized.match(/^(\d+\.?\d*)/);
-  if(match){
-    const num = parseFloat(match[1]);
-    const scaled = num * mult;
-    const rest = str.slice(match[0].length); // keep original suffix
-    // Format nicely: no unnecessary decimals
-    const fmt = scaled % 1 === 0 ? scaled.toString() : scaled.toFixed(1).replace(/\.0$/,'');
-    return fmt + rest;
-  }
-
-  // If starts with a fraction symbol alone (e.g. "½ medium")
-  for(const [sym, val] of Object.entries(fractions)){
-    if(str.startsWith(sym)){
-      const scaled = val * mult;
-      const rest = str.slice(sym.length);
-      const fmt = scaled % 1 === 0 ? scaled.toString() : scaled.toFixed(1).replace(/\.0$/,'');
-      return fmt + rest;
-    }
-  }
-
-  // Fallback — return as-is with ×N note
-  return `${str} ×${mult}`;
 }
 
 function toggleRecipeMode(mode){
