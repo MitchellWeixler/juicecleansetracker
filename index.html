@@ -1046,6 +1046,7 @@ function toggleRecipeMode(mode){
 }
 
 
+function togglePrep(key){
   state.prepChecks[key]=!state.prepChecks[key];
   saveState(state); renderPrep();
 }
